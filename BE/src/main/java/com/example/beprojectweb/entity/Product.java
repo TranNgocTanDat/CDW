@@ -1,9 +1,7 @@
 package com.example.beprojectweb.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -15,9 +13,19 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class Product {
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    String id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    int product_ID;
+
+    @ManyToOne
+    @JoinColumn(name = "cate_ID", referencedColumnName = "cate_ID")
+    @JsonBackReference
+    Category category;
     String productName;
+    String description;
+    double price;
+    int stock;
+    String img;
+
 
 
 }

@@ -3,10 +3,8 @@ import { UserTable } from "@/components/users/UserTable";
 import { AddUserModal } from "@/components/users/AddUserModal";
 import { Button } from "@/components/ui/button";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import type UserResponse from "@/model/UserResponse";
-import type UserCreationRequest from "@/model/UserCreationRequest";
 import userApi from "@/services/userApi";
-import type UserUpdateRequest from "@/model/UserUpdateRequest";
+import type { UserCreationRequest, UserResponse, UserUpdateRequest } from "@/model/User";
 
 export const UserComponent = () => {
   const [open, setOpen] = useState(false);
