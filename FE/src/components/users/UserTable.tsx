@@ -7,7 +7,7 @@ import {
   TableCell,
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import type UserResponse from "@/model/UserResponse";
+import type { UserResponse } from "@/model/User";
 
 type Props = {
   users: UserResponse[];
