@@ -4,7 +4,7 @@ export interface Category {
   cate_ID: number;
   name: string;
   description: string;
-  productList: Product[];  // Mảng chứa các sản phẩm thuộc category này
+  productList: Product[]; 
 }
 
 export interface CategoryRequest {
