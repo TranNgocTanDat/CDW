@@ -1,4 +1,3 @@
-import { Link, useNavigate } from "@tanstack/react-router";
 import {
   Heart,
   LogOut,
@@ -27,6 +26,7 @@ import { GameNavigationMenu } from "./GameNavigationMenu";
 import { useDispatch, useSelector } from "react-redux";
 import type { RootState } from "@/redux/store";
 import { logout } from "@/redux/authSlice";
+import { Link, useNavigate } from "react-router-dom";
 
 const Header1 = () => {
   const dispatch = useDispatch();
@@ -49,7 +49,7 @@ const Header1 = () => {
 
     queryClient.removeQueries({ queryKey: ["me"] });
 
-    navigate({ to: "/login" }); 
+    navigate("/login" ); 
   };
   // console.log("User data:", user);
 

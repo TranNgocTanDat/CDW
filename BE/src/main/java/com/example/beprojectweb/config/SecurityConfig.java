@@ -25,7 +25,7 @@ public class SecurityConfig {
 
     @Value("${jwt.signerKey}")
     String signerKey;
-    private String[] PUBLIC_ENDPOINTS = {"/users", "/auth/login", "/auth/introspect", "/categories", "/products", "/auth/**"};
+    private String[] PUBLIC_ENDPOINTS = {"/users", "/categories", "/products", "/auth/**"};
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity, JwtAuthenticationConverter jwtAuthenticationConverter) throws Exception {
@@ -41,7 +41,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET,"/users").hasRole(Role.ADMIN.name())
                         .requestMatchers(HttpMethod.GET,"/users/myInfo", "/cart", "/cart-items", "/cart/user/**").hasRole(Role.USER.name())
                         .requestMatchers(HttpMethod.GET, "/categories", "/categories/**", "/products").permitAll()
-                        .requestMatchers(HttpMethod.DELETE, "/categories/**").permitAll()
+                        .requestMatchers(HttpMethod.DELETE,"/users/**", "/categories/**").hasRole(Role.ADMIN.name())
                         .requestMatchers(HttpMethod.PUT, "/categories","/categories/**").permitAll()
                         .anyRequest().authenticated());
 

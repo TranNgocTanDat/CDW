@@ -6,6 +6,7 @@ import type {Product} from "@/model/Product.ts";
 export default {
     getCategories: async () => {
         const response = await api.get<APIResponse<Category[]>>("/categories");
+        console.log(response);
         return response.result;
     },
 
