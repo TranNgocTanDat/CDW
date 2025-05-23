@@ -30,7 +30,8 @@ public class User{
     @Column(unique = true, nullable = false)
     String email;
     LocalDate dob;
-    boolean enabled;
+    @Column(nullable = false)
+    boolean enabled = false;
     @Column(name = "verification_code")
     String verificationCode;
     @Column(name = "verification_expiration")

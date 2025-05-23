@@ -5,6 +5,7 @@ import api from "./api";
 export default {
     getCategories: async () => {
         const response = await api.get<APIResponse<Category[]>>("/categories");
+        console.log(response);
         return response.result;
     },
 

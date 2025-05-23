@@ -31,7 +31,7 @@ public class AuthController {
     @PostMapping("/signup")
     APIResponse<User> createUser(@RequestBody @Valid UserCreationRequest request) {
         APIResponse apiResponse = new APIResponse();
-        apiResponse.setResult(userService.createUser(request));
+        apiResponse.setResult(authenticationService.createUser(request));
         return apiResponse;
     }
     //Tạo endpoint login
@@ -54,7 +54,7 @@ public class AuthController {
     @PostMapping("/verify")
     public ResponseEntity<?> verifyUser(@RequestBody VerifyUser request) {
         try {
-            userService.verifyUser(request);
+            authenticationService.verifyUser(request);
             return ResponseEntity.ok("Account verified successfully");
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
@@ -64,7 +64,7 @@ public class AuthController {
     @PostMapping("/resend")
     public ResponseEntity<?> resendVerificationCode(@RequestParam String email) {
         try {
-            userService.resendVerificationCode(email);
+            authenticationService.resendVerificationCode(email);
             return ResponseEntity.ok("Verification code sent");
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(e.getMessage());

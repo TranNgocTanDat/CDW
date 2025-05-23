@@ -21,5 +21,4 @@ public class UserCreationRequest {
 
     @Email(message = "EMAIL_INVALID")  // Đảm bảo đây là một email hợp lệ
     String email;
-    String dob;
 }

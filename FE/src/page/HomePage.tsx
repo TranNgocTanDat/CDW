@@ -4,8 +4,8 @@ import { CategoryCard } from "@/components/home/catgoryCard";
 import { Button } from "@/components/ui/button";
 import categoryApi from "@/services/categoryApi";
 import { useQuery } from "@tanstack/react-query";
-import { Link } from "@tanstack/react-router";
 import { ChevronRight } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const HomePage = () => {
   const { data: gameCategories } = useQuery({
@@ -78,11 +78,7 @@ const HomePage = () => {
             gameCategories.map((category) => (
               <CategoryCard
                 key={category.cate_ID}
-                name={category.name}
-                // imageUrl={
-                //   category.imageUrl || "/placeholder.svg?height=200&width=200"
-                // }
-                // count={category.count || 0}
+                category={category}
               />
             ))
           )}

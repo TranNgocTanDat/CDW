@@ -1,7 +1,8 @@
-import type { AuthenticationResponse } from "@/model/Authentication";
+import type { AuthenticationResponse, VerifyUserRequest } from "@/model/Authentication";
 import type AuthenticationReuquest from "@/model/Authentication";
 import api from "./api";
 import type { APIResponse } from "@/model/APIResponse";
+import type { Verify } from "crypto";
 
 export default {
   login: async (
@@ -24,5 +25,12 @@ export default {
     }
 
     return response.result;
+  },
+
+  verifyUser: async (
+    request: VerifyUserRequest
+  ): Promise<void> => {
+     await api.post("/auth/verify", request)
+      
   },
 };

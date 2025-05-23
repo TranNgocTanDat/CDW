@@ -3,7 +3,6 @@ import { Input } from "@/components/ui/input";
 import type AuthenticationReuquest from "@/model/Authentication";
 import authApi from "@/services/authApi";
 import { useMutation } from "@tanstack/react-query";
-import { Link, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import {
   Card,
@@ -18,9 +17,10 @@ import { Label } from "@/components/ui/label";
 import { Loader2 } from "lucide-react";
 import { useDispatch } from "react-redux";
 import { loginSuccess } from "@/redux/authSlice";
+import { Link, useNavigate } from "react-router-dom";
 
 const LoginPage = () => {
-  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -35,14 +35,14 @@ const LoginPage = () => {
       
       dispatch(loginSuccess({ token: data.token }));
       localStorage.setItem("token", data.token)
-      navigate({ to: "/" });
+      navigate("/");
     },
   });
 
   const handleLogin = (event: React.FormEvent<HTMLFormElement>) => {
-    console.log("Đăng nhập với", { username, password });
+    console.log("Đăng nhập với", { email, password });
     event.preventDefault(); // Ngăn reload trang
-    const authRequest: AuthenticationReuquest = { username, password };
+    const authRequest: AuthenticationReuquest = { email, password };
     login.mutate(authRequest);
   };
 
@@ -71,12 +71,12 @@ const LoginPage = () => {
             <div className="space-y-2">
               <Label htmlFor="email">Email</Label>
               <Input
-                // id="email"
-                // type="email"
-                // placeholder="name@example.com"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-                // required
+                id="email"
+                type="email"
+                placeholder="name@example.com"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
               />
             </div>
             <div className="space-y-2">
@@ -110,7 +110,7 @@ const LoginPage = () => {
         <CardFooter className="flex justify-center">
           <p className="text-sm text-muted-foreground">
             Don&apos;t have an account? {/* auth/register */}
-            <Link to="/" className="text-primary hover:underline">
+            <Link to="/register" className="text-primary hover:underline">
               Sign up
             </Link>
           </p>

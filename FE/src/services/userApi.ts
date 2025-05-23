@@ -29,20 +29,19 @@ export default {
       withCredentials: true,
     });
 
-    // if (response.code === 401) {
-    //   alert("Token hết hạn hoặc không hợp lệ. Vui lòng đăng nhập lại.");
-    //   localStorage.removeItem("token");  // Xóa token khi không hợp lệ
-    //   window.location.href = "/login";  // Chuyển hướng về trang đăng nhập
-
-    // }
+    if (response.code === 401) {
+      alert("Token hết hạn hoặc không hợp lệ. Vui lòng đăng nhập lại.");
+      localStorage.removeItem("token");  // Xóa token khi không hợp lệ
+      window.location.href = "/login";  // Chuyển hướng về trang đăng nhập
+    }
     console.log(response);
     return response.result;  // Trả về dữ liệu người dùng
   },
 
   addUser: async (user: UserCreationRequest): Promise<UserResponse> => {
-    const response = await api.post<APIResponse<UserResponse>>("/users", user);
+    const response = await api.post<APIResponse<UserResponse>>("/auth/signup", user);
     console.log(response);
-    return response.data.result; // Trả về người dùng đã được tạo
+    return response.result; // Trả về người dùng đã được tạo
   },
 
   updateUser: async (
