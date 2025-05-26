@@ -1,12 +1,10 @@
 package com.example.beprojectweb.entity;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import java.math.BigDecimal;
-import java.util.Set;
 
 @Entity
 @Getter
@@ -15,20 +13,19 @@ import java.util.Set;
 @AllArgsConstructor
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class Product {
+public class OrderItem {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long productId;
+    Long id;
+
+    BigDecimal totalPrice;                 // Giá tại thời điểm mua (có thể khác giá hiện tại)
 
     @ManyToOne
-    @JoinColumn(name = "cate_ID", referencedColumnName = "cate_ID")
-    @JsonBackReference
-    Category category;
-    String productName;
-    String description;
-    BigDecimal price;
-    int stock;
-    String img;
+    @JoinColumn(name = "order_id")
+    Order order;                      // Đơn hàng tổng
 
+    @ManyToOne
+    @JoinColumn(name = "product_id")
+    Product product;                        // Game cụ thể
 
 }

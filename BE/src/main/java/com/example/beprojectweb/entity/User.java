@@ -43,4 +43,5 @@ public class User{
 
     @ElementCollection
     Set<String> roles;
+
 }
