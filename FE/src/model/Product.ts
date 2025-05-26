@@ -1,9 +1,5 @@
-// src/model/Product.ts
-
-import type { Category } from "./Category";
-
 export interface Product {
-  product_ID: number;
+  productId: number;  // đổi từ product_ID thành productId
   category: Category;  // Tham chiếu đến Category
   productName: string;
   description: string;
@@ -18,11 +14,11 @@ export interface ProductRequest {
   price: number;
   stock: number;
   img: string;
-  cate_ID: number;  // ID của Category mà sản phẩm thuộc về
+  cate_ID: number;  // giữ nguyên nếu backend yêu cầu
 }
 
 export interface ProductResponse {
-  product_ID: number;
+  productId: number;  // đổi từ product_ID thành productId
   category: Category;
   productName: string;
   description: string;
