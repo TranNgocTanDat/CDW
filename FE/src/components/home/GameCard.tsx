@@ -6,14 +6,14 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardFooter } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Link } from "react-router-dom"
-import type { Product } from "@/model/Product"
+import type { Product, ProductResponse } from "@/model/Product"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { useDispatch, useSelector } from "react-redux"
 import type { RootState } from "@/redux/store"
 import cartApi from "@/services/cartApi"
 import { addCartItem } from "@/redux/cartSlice"
 
-export function GameCard(product: Product) {
+export function GameCard(product: ProductResponse) {
   const [isHovered, setIsHovered] = useState(false)
   const [isFavorite, setIsFavorite] = useState(false)
   const queryClient = useQueryClient();
