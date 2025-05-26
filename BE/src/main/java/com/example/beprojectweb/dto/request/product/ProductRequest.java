@@ -16,5 +16,5 @@ public class ProductRequest {
     BigDecimal price;
     int stock;
     String img;
-    Long cate_ID;
+    Long cateID;
 }
