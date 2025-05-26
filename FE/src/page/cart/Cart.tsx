@@ -1,21 +1,45 @@
-import { useState, useEffect } from "react"
-import { ShoppingCart, Trash2, Plus, Minus, ArrowRight } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { Separator } from "@/components/ui/separator"
-// import { formatPrice } from "@/lib/utils"
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { useCart } from "./components/cart-context"
-import { Link } from "react-router-dom"
+import { useEffect, useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { ShoppingCart, Trash2, Plus, Minus, ArrowRight } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Link } from "react-router-dom";
+import type { RootState } from "@/redux/store"; 
+import { setCartItems, removeCartItem, clearCart } from "@/redux/cartSlice";
+import cartApi from "@/services/cartApi";
+import { useQuery } from "@tanstack/react-query";
+import type { CartResponse } from "@/model/Cart";
 
 export function CartPage() {
-  const { items, removeItem, updateQuantity, clearCart, subtotal, itemCount } = useCart()
-  const [mounted, setMounted] = useState(false)
+  const dispatch = useDispatch();
+  const cartState = useSelector((state: RootState) => state.cart.cart);
+const items = cartState?.cartItems || [];
+
+
+const { data: cart, isLoading } = useQuery<CartResponse>({
+  queryKey: ["cart"],
+  queryFn: cartApi.getCart,
+  refetchOnWindowFocus: false,
+});
 
   useEffect(() => {
-    setMounted(true)
-  }, [])
+    if (cart) {
+      dispatch(setCartItems(cart));
+    }
+  }, [cart, dispatch]);
 
-  if (!mounted) {
+
+  const removeItem = (id: number) => {
+    dispatch(removeCartItem(id));
+  };
+
+  const clearCartHandler = () => {
+    dispatch(clearCart());
+  };
+
+ 
+  if (isLoading) {
     return (
       <div className="flex items-center justify-center py-12">
         <div className="text-center">
@@ -23,26 +47,28 @@ export function CartPage() {
           <p className="text-muted-foreground mt-2">Please wait while we load your cart items.</p>
         </div>
       </div>
-    )
+    );
   }
 
-  if (items.length === 0) {
+  if (!items.length ) {
     return (
       <div className="flex flex-col items-center justify-center py-12">
         <ShoppingCart className="h-24 w-24 text-muted-foreground mb-6" />
         <h2 className="text-2xl font-bold">Your cart is empty</h2>
         <p className="text-muted-foreground mt-2 mb-6">Add some items to your cart to see them here.</p>
         <Button asChild size="lg">
-          <Link to="/">Browse Games</Link>
+          <Link to="/">Browse Products</Link>
         </Button>
       </div>
-    )
+    );
   }
+
+  const subtotal = items.reduce((sum, item) => sum + item.totalPrice, 0);
 
   return (
     <div>
       <h1 className="text-3xl font-bold mb-8">
-        Your Cart ({itemCount} {itemCount === 1 ? "item" : "items"})
+        Your Cart 
       </h1>
       <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
         <div className="md:col-span-2">
@@ -61,22 +87,22 @@ export function CartPage() {
                     <div className="flex gap-4 md:col-span-3">
                       <div className="relative h-20 w-16 flex-shrink-0 overflow-hidden rounded-md border">
                         <img
-                          src={item.imageUrl || "/placeholder.svg"}
-                          alt={item.title}
+                          src={item.product.img || "/placeholder.svg"}
+                          alt={item.product.productName}
                           className="object-cover"
                         />
                       </div>
                       <div className="flex flex-col justify-center">
-                        <Link to={`/products/${item.slug}`} className="font-medium hover:underline">
-                          {item.title}
-                        </Link>
+                        {/* <Link to={/products/${item.product.slug}} className="font-medium hover:underline">
+                          {item.product.title}
+                        </Link> */}
                         <div className="mt-1 text-sm text-muted-foreground md:hidden">
-                          {(item.price)} each
+                          ${item.product.price.toFixed(2)} each
                         </div>
                       </div>
                     </div>
                     <div className="hidden md:flex md:items-center md:justify-center">
-                      <span className="text-sm">{(item.price)}</span>
+                      <span className="text-sm">${item.product.price.toFixed(2)}</span>
                     </div>
                     <div className="flex items-center md:justify-center">
                       <div className="flex items-center">
@@ -84,18 +110,14 @@ export function CartPage() {
                           variant="outline"
                           size="icon"
                           className="h-8 w-8 rounded-full"
-                          onClick={() => updateQuantity(item.id, item.quantity - 1)}
-                          disabled={item.quantity <= 1}
                         >
                           <Minus className="h-3 w-3" />
                           <span className="sr-only">Decrease quantity</span>
                         </Button>
-                        <span className="w-8 text-center text-sm">{item.quantity}</span>
                         <Button
                           variant="outline"
                           size="icon"
                           className="h-8 w-8 rounded-full"
-                          onClick={() => updateQuantity(item.id, item.quantity + 1)}
                         >
                           <Plus className="h-3 w-3" />
                           <span className="sr-only">Increase quantity</span>
@@ -103,7 +125,7 @@ export function CartPage() {
                       </div>
                     </div>
                     <div className="flex items-center justify-between md:justify-end">
-                      <span className="font-medium md:text-right">{(item.price * item.quantity)}</span>
+                      <span className="font-medium md:text-right">${item.totalPrice.toFixed(2)}</span>
                       <Button
                         variant="ghost"
                         size="icon"
@@ -126,7 +148,7 @@ export function CartPage() {
                   Continue Shopping
                 </Link>
               </Button>
-              <Button variant="ghost" onClick={clearCart}>
+              <Button variant="ghost" onClick={clearCartHandler}>
                 Clear Cart
               </Button>
             </div>
@@ -140,7 +162,7 @@ export function CartPage() {
             <CardContent className="space-y-4">
               <div className="flex justify-between">
                 <span className="text-sm">Subtotal</span>
-                <span className="text-sm font-medium">{(subtotal)}</span>
+                <span className="text-sm font-medium">${subtotal.toFixed(2)}</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-sm">Shipping</span>
@@ -153,7 +175,7 @@ export function CartPage() {
               <Separator />
               <div className="flex justify-between">
                 <span className="font-medium">Total</span>
-                <span className="font-medium">{(subtotal)}</span>
+                <span className="font-medium">${subtotal.toFixed(2)}</span>
               </div>
             </CardContent>
             <CardFooter>
@@ -165,5 +187,5 @@ export function CartPage() {
         </div>
       </div>
     </div>
-  )
-}
+  );
+} 

@@ -1,5 +1,7 @@
+import type { Category } from "./Category";
+
 export interface Product {
-  productId: number;  // đổi từ product_ID thành productId
+  productId: number;
   category: Category;  // Tham chiếu đến Category
   productName: string;
   description: string;
@@ -18,8 +20,8 @@ export interface ProductRequest {
 }
 
 export interface ProductResponse {
-  productId: number;  // đổi từ product_ID thành productId
-  category: Category;
+  productId: number;
+  categoryName: string;
   productName: string;
   description: string;
   price: number;

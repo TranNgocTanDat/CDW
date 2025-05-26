@@ -8,7 +8,7 @@ spring:
   datasource:
     url: jdbc:mysql://localhost:3306/beprojectweb
     username: root
-    password: Danhnguyen2003
+    password: Trandat123
   jpa:
     hibernate:
       ddl-auto: update

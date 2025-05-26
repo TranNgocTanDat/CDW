@@ -2,7 +2,6 @@ import type { AuthenticationResponse, VerifyUserRequest } from "@/model/Authenti
 import type AuthenticationReuquest from "@/model/Authentication";
 import api from "./api";
 import type { APIResponse } from "@/model/APIResponse";
-import type { Verify } from "crypto";
 
 export default {
   login: async (
