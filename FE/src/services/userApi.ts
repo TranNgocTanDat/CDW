@@ -5,8 +5,7 @@ import type {
   UserUpdateRequest,
 } from "@/model/User";
 import type { APIResponse } from "@/model/APIResponse";
-import authApi from "./authApi";
-import store from "@/redux/store";
+
 
 export default {
   // getUsers: () => api.get<APIResponse<UserResponse[]>>("/users"),

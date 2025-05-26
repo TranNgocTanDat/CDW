@@ -3,7 +3,7 @@
 import type { Category } from "./Category";
 
 export interface Product {
-  product_ID: number;
+  productId: number;
   category: Category;  // Tham chiếu đến Category
   productName: string;
   description: string;
@@ -22,8 +22,8 @@ export interface ProductRequest {
 }
 
 export interface ProductResponse {
-  product_ID: number;
-  category: Category;
+  productId: number;
+  categoryName: string;
   productName: string;
   description: string;
   price: number;
