@@ -7,6 +7,7 @@ import com.example.beprojectweb.enums.OrderStatus;
 import com.example.beprojectweb.enums.PaymentMethod;
 import com.example.beprojectweb.mapper.OrderMapper;
 import com.example.beprojectweb.repository.CartRepository;
+import com.example.beprojectweb.repository.KeyRepository;
 import com.example.beprojectweb.repository.OrderRepository;
 import com.example.beprojectweb.repository.UserRepository;
 import com.example.beprojectweb.service.cart.CartService;
@@ -18,20 +19,24 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.security.Key;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-public class OrderService implements IOrderService{
+public class OrderService implements IOrderService {
+
     UserRepository userRepository;
     CartRepository cartRepository;
-    private final OrderRepository orderRepository;
-    private final CartService cartService;
-    private final OrderMapper orderMapper;
+    OrderRepository orderRepository;
+    CartService cartService;
+    OrderMapper orderMapper;
+    KeyRepository keyRepository;
 
     @PreAuthorize("hasRole('USER')")
     @Override
@@ -48,17 +53,10 @@ public class OrderService implements IOrderService{
             throw new RuntimeException("Cart is empty");
         }
 
-        // Tính tổng tiền
         BigDecimal totalPrice = cart.getCartItems().stream()
-                .map(item -> {
-                    System.out.println(">>> Sản phẩm: " + item.getProduct().getProductName()
-                            + " | Giá: " + item.getProduct().getPrice());
-                    return item.getProduct().getPrice();
-                })
+                .map(item -> item.getProduct().getPrice())
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
 
-
-        // Tạo đơn hàng
         Order order = Order.builder()
                 .user(user)
                 .createdAt(LocalDateTime.now())
@@ -66,7 +64,6 @@ public class OrderService implements IOrderService{
                 .totalPrice(totalPrice)
                 .build();
 
-        // Convert CartItem → OrderItem
         Set<OrderItem> orderItems = cart.getCartItems().stream().map(cartItem -> {
             Product product = cartItem.getProduct();
             return OrderItem.builder()
@@ -78,9 +75,6 @@ public class OrderService implements IOrderService{
 
         order.setOrderItems(orderItems);
         Order savedOrder = orderRepository.save(order);
-
-        // Clear cart
-//        cartService.clearCart(user);
 
         return orderMapper.toOrderResponse(savedOrder);
     }
@@ -118,17 +112,39 @@ public class OrderService implements IOrderService{
         order.setStatus(OrderStatus.PAID);
         Order saved = orderRepository.save(order);
 
-        // Xoá giỏ hàng sau khi thanh toán
-        cartService.clearCart(order.getUser().getCart().getId());
+        // Tạo key cho từng game
+        Set<OrderItem> orderItems = saved.getOrderItems();
+        UUID userId = saved.getUser().getId();
+
+        for (OrderItem item : orderItems) {
+            String gameName = item.getProduct().getProductName();
+            String hashKey = generateHashedKey(userId, gameName);
+
+            key newKey = key.builder()
+                    .userId(userId)
+                    .gameName(gameName)
+                    .key(hashKey)
+                    .build();
+
+            keyRepository.save(newKey);
+        }
+
+        // Xoá giỏ hàng
+        cartService.clearCart(saved.getUser().getCart().getId());
 
         return orderMapper.toOrderResponse(saved);
+    }
+
+    private String generateHashedKey(UUID userId, String gameName) {
+        String raw = userId + "-" + gameName + "-" + System.nanoTime();
+        return Integer.toHexString(raw.hashCode()); // Đơn giản, đủ dùng nếu không cần mã hóa mạnh
     }
 
     @Override
     public List<OrderResponse> getAllOrder() {
         return orderRepository.findAll()
                 .stream()
-                .map(order -> orderMapper.toOrderResponse(order))
+                .map(orderMapper::toOrderResponse)
                 .toList();
     }
 }

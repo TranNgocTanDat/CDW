@@ -43,6 +43,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/categories", "/categories/**", "/products", "/products/**").permitAll()
                         .requestMatchers(HttpMethod.DELETE,"/users/**", "/categories/**").hasRole(Role.ADMIN.name())
                         .requestMatchers(HttpMethod.PUT, "/categories","/categories/**").permitAll()
+                        .requestMatchers("/api/keys/**").hasRole(Role.USER.name())
                         .anyRequest().authenticated());
 
         httpSecurity.oauth2ResourceServer(oauth2 ->

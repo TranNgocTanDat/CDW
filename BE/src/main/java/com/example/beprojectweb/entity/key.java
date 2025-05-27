@@ -5,6 +5,7 @@ import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import java.io.Serializable;
+import java.util.UUID;
 
 @Embeddable
 @Getter
@@ -13,9 +14,10 @@ import java.io.Serializable;
 @AllArgsConstructor
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-@EqualsAndHashCode // 👉 Lombok sẽ tự generate equals() và hashCode()
+@EqualsAndHashCode
 public class key implements Serializable {
-    Long id;
-    Long userId;
+    UUID id;
+    UUID userId;
+    String gameName;
     String key;
 }
