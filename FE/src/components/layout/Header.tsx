@@ -49,7 +49,7 @@ const Header1 = () => {
 
     queryClient.removeQueries({ queryKey: ["me"] });
 
-    navigate("/login" ); 
+    navigate("/login");
   };
   // console.log("User data:", user);
 
@@ -73,12 +73,14 @@ const Header1 = () => {
               className="w-[200px] lg:w-[300px] pl-8"
             />
           </div>
-          <Button variant="outline" size="icon" className="relative">
-            <ShoppingCart className="h-5 w-5" />
-            <span className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-primary text-[10px] text-primary-foreground">
-              3
-            </span>
-          </Button>
+          <Link to="/cart">
+            <Button variant="outline" size="icon" className="relative">
+              <ShoppingCart className="h-5 w-5" />
+              <span className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-primary text-[10px] text-primary-foreground">
+                3
+              </span>
+            </Button>
+          </Link>
           {user ? (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
@@ -148,6 +150,3 @@ const Header1 = () => {
 };
 
 export default Header1;
-
-
-

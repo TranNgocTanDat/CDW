@@ -7,7 +7,7 @@ export  interface User {
   dob: string;
   email: string;
   verificationCode: string;
-  
+  roles: string[];
 }
 
 // UserCreationRequest.ts
@@ -19,6 +19,7 @@ export  interface UserCreationRequest {
 
 // UserResponse.ts
 export  interface UserResponse {
+  name: any;
   id: string;
   username: string;
   password: string;
@@ -27,6 +28,7 @@ export  interface UserResponse {
   firstName: string;
   lastName: string;
   dob: string;
+  roles: string[];
 }
 
 // UserUpdateRequest.ts

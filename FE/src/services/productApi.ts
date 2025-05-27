@@ -1,11 +1,11 @@
 import type { APIResponse } from "@/model/APIResponse";
-import type { Product } from "@/model/Product";
+import type { Product, ProductResponse } from "@/model/Product";
 import api from "./api";
 
 export default {
     // Lấy tất cả sản phẩm
-    getProducts: async (): Promise<Product[]> => {
-        const response = await api.get<APIResponse<Product[]>>("/products");
+    getProducts: async (): Promise<ProductResponse[]> => {
+        const response = await api.get<APIResponse<ProductResponse[]>>("/products");
         console.log(response);
         return response.result;
     },

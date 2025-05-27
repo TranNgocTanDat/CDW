@@ -77,8 +77,7 @@ const { data: cart, isLoading } = useQuery<CartResponse>({
               <div className="hidden md:grid md:grid-cols-6 md:gap-4 md:mb-4 text-sm text-muted-foreground">
                 <div className="md:col-span-3">Product</div>
                 <div className="text-center">Price</div>
-                <div className="text-center">Quantity</div>
-                <div className="text-right">Total</div>
+                <div className="text-center">Total</div>
               </div>
               <Separator className="hidden md:block mb-4" />
               <div className="space-y-4">
@@ -93,9 +92,6 @@ const { data: cart, isLoading } = useQuery<CartResponse>({
                         />
                       </div>
                       <div className="flex flex-col justify-center">
-                        {/* <Link to={/products/${item.product.slug}} className="font-medium hover:underline">
-                          {item.product.title}
-                        </Link> */}
                         <div className="mt-1 text-sm text-muted-foreground md:hidden">
                           ${item.product.price.toFixed(2)} each
                         </div>
@@ -104,28 +100,11 @@ const { data: cart, isLoading } = useQuery<CartResponse>({
                     <div className="hidden md:flex md:items-center md:justify-center">
                       <span className="text-sm">${item.product.price.toFixed(2)}</span>
                     </div>
-                    <div className="flex items-center md:justify-center">
-                      <div className="flex items-center">
-                        <Button
-                          variant="outline"
-                          size="icon"
-                          className="h-8 w-8 rounded-full"
-                        >
-                          <Minus className="h-3 w-3" />
-                          <span className="sr-only">Decrease quantity</span>
-                        </Button>
-                        <Button
-                          variant="outline"
-                          size="icon"
-                          className="h-8 w-8 rounded-full"
-                        >
-                          <Plus className="h-3 w-3" />
-                          <span className="sr-only">Increase quantity</span>
-                        </Button>
-                      </div>
+                    <div className="flex items-center md:justify-center ">
+                      <span className="font-medium md:text-right">${item.totalPrice.toFixed(2)}</span>
                     </div>
                     <div className="flex items-center justify-between md:justify-end">
-                      <span className="font-medium md:text-right">${item.totalPrice.toFixed(2)}</span>
+                      
                       <Button
                         variant="ghost"
                         size="icon"

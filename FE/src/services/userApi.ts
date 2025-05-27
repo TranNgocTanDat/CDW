@@ -13,9 +13,15 @@ export default {
   // updateUser: (id: string, user: UserUpdateRequest) => api.put<UserResponse>(`/users/${id}`, user),
 
   getUsers: async (): Promise<UserResponse[]> => {
-    const response = await api.get<APIResponse<UserResponse[]>>("/users");
+    const token = localStorage.getItem("token");
+    const response = await api.get<APIResponse<UserResponse[]>>("/users", {
+      headers: {
+        Authorization: `Bearer ${token}`,  
+      },
+      withCredentials: true,
+    });
     console.log(response);
-    return response.data.result; // Trả về mảng người dùng từ `result`
+    return response.result; // Trả về mảng người dùng từ `result`
   },
 
   getMyInfo: async (): Promise<UserResponse> => {

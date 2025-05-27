@@ -32,10 +32,15 @@ const LoginPage = () => {
     mutationFn: authApi.login,
     onSuccess: (data) => {
       console.log("Đăng nhập thành công", data);
-      
-      dispatch(loginSuccess({ token: data.token }));
-      localStorage.setItem("token", data.token)
-      navigate("/");
+
+      dispatch(loginSuccess({ token: data.token, userResponse: data.userResponse }));
+      localStorage.setItem("token", data.token);
+      const roles = data.userResponse.roles;
+      if (roles.includes("ADMIN")) {
+        navigate("/admin");
+      } else {
+        navigate("/");
+      }
     },
   });
 
@@ -105,6 +110,21 @@ const LoginPage = () => {
                 "Sign In"
               )}
             </Button>
+            <Button
+              variant="outline"
+              className="w-full mt-4 flex items-center justify-center gap-2"
+              onClick={() => {
+                window.location.href =
+                  "http://localhost:8080//api/oauth2/authorization/google";
+              }}
+            >
+              <img
+                src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Google_%22G%22_Logo.svg/512px-Google_%22G%22_Logo.svg.png"
+                alt="Google Logo"
+                className="w-5 h-5"
+              />
+              Continue with Google
+            </Button>
           </form>
         </CardContent>
         <CardFooter className="flex justify-center">
@@ -120,7 +140,4 @@ const LoginPage = () => {
   );
 };
 export default LoginPage;
-function setAuth(arg0: { token: string; }): any {
-  throw new Error("Function not implemented.");
-}
 
