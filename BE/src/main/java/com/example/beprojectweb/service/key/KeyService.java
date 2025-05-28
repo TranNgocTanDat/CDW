@@ -9,6 +9,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+
 import java.util.stream.Collectors;
 
 import static lombok.AccessLevel.PRIVATE;
@@ -18,11 +19,13 @@ import static lombok.AccessLevel.PRIVATE;
 @FieldDefaults(level = PRIVATE, makeFinal = true)
 public class KeyService implements IKeyService {
 
+
     final KeyRepository keyRepository;
 
     @PreAuthorize("hasRole('USER')")
     @Override
     public List<KeyResponse> getKeysByUserId(Long userId) {
+
         List<Key> keys = keyRepository.findAll().stream()
                 .filter(k -> k.getUserId().equals(userId))
                 .sorted((a, b) -> b.getId().compareTo(a.getId())) // sắp xếp mới nhất trước
@@ -42,3 +45,4 @@ public class KeyService implements IKeyService {
                 .collect(Collectors.toList());
     }
 }
+

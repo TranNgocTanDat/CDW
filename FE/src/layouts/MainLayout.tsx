@@ -1,6 +1,6 @@
 import Footer from "@/components/layout/Footer";
 import Header1 from "@/components/layout/Header";
-import { Outlet } from "@tanstack/react-router";
+import { Outlet } from "react-router-dom";
 
 const MainLayout = () => {
   return (
