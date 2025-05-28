@@ -3,7 +3,7 @@ package com.example.beprojectweb.exception;
 public enum ErrorCode {
     UNCATEGORIZED_EXCEPTION(9999, "Uncategorized error"),
     USER_EXISTED(1001, "User existed"),
-    INVALID_KEY(1000, "Invalid message key"),
+    INVALID_KEY(1000, "Invalid message Key"),
     USERNAME_INVALID(1002, "Username must be at least 3 characters"),
     PASSWORD_INVALID(1003, "Password must be at least 3 characters"),
     USER_NOT_EXISTS(1004, "User not existed"),

@@ -31,15 +31,15 @@ public class GlobalException {
     //Bắt lỗi valid
     @ExceptionHandler(value = MethodArgumentNotValidException.class)
     ResponseEntity<APIResponse> handlingValidException(MethodArgumentNotValidException exception){
-        //Lấy key từ message trong annotation validation
+        //Lấy Key từ message trong annotation validation
         String enumKey = exception.getFieldError().getDefaultMessage();
 
         ErrorCode errorCode;
         try {
-            //key tồn tại gán Errorcode
+            //Key tồn tại gán Errorcode
             errorCode = ErrorCode.valueOf(enumKey);
         } catch (IllegalArgumentException e) {
-            //key không hợp lệ hoặc null, gán lỗi mặc định
+            //Key không hợp lệ hoặc null, gán lỗi mặc định
             errorCode = ErrorCode.INVALID_KEY;
         }
 

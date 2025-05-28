@@ -7,10 +7,7 @@ import com.example.beprojectweb.enums.OrderStatus;
 import com.example.beprojectweb.enums.PaymentMethod;
 import com.example.beprojectweb.mapper.OrderMapper;
 import com.example.beprojectweb.repository.CartRepository;
-<<<<<<< HEAD
-=======
 import com.example.beprojectweb.repository.KeyRepository;
->>>>>>> 69320252706cb84eef3f4666440b8312055c7ba3
 import com.example.beprojectweb.repository.OrderRepository;
 import com.example.beprojectweb.repository.UserRepository;
 import com.example.beprojectweb.service.cart.CartService;
@@ -22,30 +19,15 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-<<<<<<< HEAD
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Set;
-=======
-import java.security.Key;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
->>>>>>> 69320252706cb84eef3f4666440b8312055c7ba3
 import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-<<<<<<< HEAD
-public class OrderService implements IOrderService{
-    UserRepository userRepository;
-    CartRepository cartRepository;
-    private final OrderRepository orderRepository;
-    private final CartService cartService;
-    private final OrderMapper orderMapper;
-=======
 public class OrderService implements IOrderService {
 
     UserRepository userRepository;
@@ -54,8 +36,6 @@ public class OrderService implements IOrderService {
     CartService cartService;
     OrderMapper orderMapper;
     KeyRepository keyRepository;
->>>>>>> 69320252706cb84eef3f4666440b8312055c7ba3
-
     @PreAuthorize("hasRole('USER')")
     @Override
     public OrderResponse createOrder() {
@@ -71,7 +51,6 @@ public class OrderService implements IOrderService {
             throw new RuntimeException("Cart is empty");
         }
 
-<<<<<<< HEAD
         // Tính tổng tiền
         BigDecimal totalPrice = cart.getCartItems().stream()
                 .map(item -> {
@@ -82,13 +61,7 @@ public class OrderService implements IOrderService {
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
 
 
-        // Tạo đơn hàng
-=======
-        BigDecimal totalPrice = cart.getCartItems().stream()
-                .map(item -> item.getProduct().getPrice())
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
 
->>>>>>> 69320252706cb84eef3f4666440b8312055c7ba3
         Order order = Order.builder()
                 .user(user)
                 .createdAt(LocalDateTime.now())
@@ -96,10 +69,6 @@ public class OrderService implements IOrderService {
                 .totalPrice(totalPrice)
                 .build();
 
-<<<<<<< HEAD
-        // Convert CartItem → OrderItem
-=======
->>>>>>> 69320252706cb84eef3f4666440b8312055c7ba3
         Set<OrderItem> orderItems = cart.getCartItems().stream().map(cartItem -> {
             Product product = cartItem.getProduct();
             return OrderItem.builder()
@@ -112,12 +81,6 @@ public class OrderService implements IOrderService {
         order.setOrderItems(orderItems);
         Order savedOrder = orderRepository.save(order);
 
-<<<<<<< HEAD
-        // Clear cart
-//        cartService.clearCart(user);
-
-=======
->>>>>>> 69320252706cb84eef3f4666440b8312055c7ba3
         return orderMapper.toOrderResponse(savedOrder);
     }
 
@@ -154,11 +117,7 @@ public class OrderService implements IOrderService {
         order.setStatus(OrderStatus.PAID);
         Order saved = orderRepository.save(order);
 
-<<<<<<< HEAD
-        // Xoá giỏ hàng sau khi thanh toán
-        cartService.clearCart(order.getUser().getCart().getId());
-=======
-        // Tạo key cho từng game
+        // Tạo Key cho từng game
         Set<OrderItem> orderItems = saved.getOrderItems();
         UUID userId = saved.getUser().getId();
 
@@ -166,10 +125,10 @@ public class OrderService implements IOrderService {
             String gameName = item.getProduct().getProductName();
             String hashKey = generateHashedKey(userId, gameName);
 
-            key newKey = key.builder()
+            Key newKey = Key.builder()
                     .userId(userId)
                     .gameName(gameName)
-                    .key(hashKey)
+                    .gameKey(hashKey)
                     .build();
 
             keyRepository.save(newKey);
@@ -177,28 +136,20 @@ public class OrderService implements IOrderService {
 
         // Xoá giỏ hàng
         cartService.clearCart(saved.getUser().getCart().getId());
->>>>>>> 69320252706cb84eef3f4666440b8312055c7ba3
 
         return orderMapper.toOrderResponse(saved);
     }
 
-<<<<<<< HEAD
-=======
     private String generateHashedKey(UUID userId, String gameName) {
         String raw = userId + "-" + gameName + "-" + System.nanoTime();
         return Integer.toHexString(raw.hashCode()); // Đơn giản, đủ dùng nếu không cần mã hóa mạnh
     }
 
->>>>>>> 69320252706cb84eef3f4666440b8312055c7ba3
     @Override
     public List<OrderResponse> getAllOrder() {
         return orderRepository.findAll()
                 .stream()
-<<<<<<< HEAD
-                .map(order -> orderMapper.toOrderResponse(order))
-=======
                 .map(orderMapper::toOrderResponse)
->>>>>>> 69320252706cb84eef3f4666440b8312055c7ba3
                 .toList();
     }
 }
