@@ -27,19 +27,20 @@ public class User{
     String password;
     String firstName;
     String lastName;
-    @Column(unique = true, nullable = false)
+//    @Column(unique = true, nullable = false)
     String email;
     LocalDate dob;
-    boolean enabled;
+    @Column(nullable = false)
+    boolean enabled = false;
     @Column(name = "verification_code")
     String verificationCode;
     @Column(name = "verification_expiration")
     LocalDateTime verificationCodeExpiredAt;
-
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     @ToString.Exclude
     Cart cart;
 
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     Set<String> roles;
+
 }
