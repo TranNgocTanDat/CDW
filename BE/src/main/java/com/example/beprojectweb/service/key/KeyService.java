@@ -9,7 +9,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.UUID;
+
 import java.util.stream.Collectors;
 
 import static lombok.AccessLevel.PRIVATE;
@@ -19,18 +19,30 @@ import static lombok.AccessLevel.PRIVATE;
 @FieldDefaults(level = PRIVATE, makeFinal = true)
 public class KeyService implements IKeyService {
 
-    KeyRepository keyRepository;
+
+    final KeyRepository keyRepository;
 
     @PreAuthorize("hasRole('USER')")
     @Override
-    public List<KeyResponse> getKeysByUserId(UUID userId) {
+    public List<KeyResponse> getKeysByUserId(Long userId) {
+
         List<Key> keys = keyRepository.findAll().stream()
                 .filter(k -> k.getUserId().equals(userId))
                 .sorted((a, b) -> b.getId().compareTo(a.getId())) // sắp xếp mới nhất trước
                 .collect(Collectors.toList());
 
         return keys.stream()
-                .map(Key -> new KeyResponse(Key.getId() , Key.getUserId(), Key.getGameName(), Key.getGameKey()))
+                .map(key -> new KeyResponse(key.getId(), key.getUserId(), key.getGameName(), key.getGameKey()))
+                .collect(Collectors.toList());
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @Override
+    public List<KeyResponse> getAllKeys() {
+        return keyRepository.findAll().stream()
+                .sorted((a, b) -> b.getId().compareTo(a.getId())) // mới nhất trước
+                .map(k -> new KeyResponse(k.getId(), k.getUserId(), k.getGameName(), k.getGameKey()))
                 .collect(Collectors.toList());
     }
 }
+

@@ -50,7 +50,13 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/categories", "/categories/**", "/products", "/products/**").permitAll()
                         .requestMatchers(HttpMethod.DELETE,"/users/**", "/categories/**").hasRole(Role.ADMIN.name())
                         .requestMatchers(HttpMethod.PUT, "/categories","/categories/**").permitAll()
+
+                    
+                        .requestMatchers(HttpMethod.GET, "/api/keys/user/**").hasRole(Role.USER.name())
+                        .requestMatchers("/api/keys/**").hasAnyRole("USER", "ADMIN")
+
                         .requestMatchers("/api/keys/**").hasRole(Role.USER.name())
+
 
                         .anyRequest().authenticated());
 
@@ -61,7 +67,10 @@ public class SecurityConfig {
 
         httpSecurity.oauth2Login(oauth2 -> oauth2
                 .userInfoEndpoint(userInfo -> userInfo
+                        .userService((OAuth2UserService) customOAuth2UserService)
+
                         .userService(customOAuth2UserService)
+
                 )
                 .successHandler(oAuth2SuccessHandler)
         );

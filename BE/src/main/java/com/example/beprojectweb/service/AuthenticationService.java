@@ -6,7 +6,6 @@ import com.example.beprojectweb.dto.request.UserCreationRequest;
 import com.example.beprojectweb.dto.request.VerifyUser;
 import com.example.beprojectweb.dto.response.AuthenticationResponse;
 import com.example.beprojectweb.dto.response.IntrospectResponse;
-import com.example.beprojectweb.dto.response.UserResponse;
 import com.example.beprojectweb.entity.User;
 import com.example.beprojectweb.enums.Role;
 import com.example.beprojectweb.exception.AppException;
