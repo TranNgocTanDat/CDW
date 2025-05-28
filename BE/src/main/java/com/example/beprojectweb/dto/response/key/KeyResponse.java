@@ -8,7 +8,7 @@ import java.util.UUID;
 @Data
 @AllArgsConstructor
 public class KeyResponse {
-    private UUID id;
+    private Long id;
     private UUID userId;
     private String gameName;
     private String key;

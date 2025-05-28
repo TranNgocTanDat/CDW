@@ -36,14 +36,6 @@ public class User{
     String verificationCode;
     @Column(name = "verification_expiration")
     LocalDateTime verificationCodeExpiredAt;
-<<<<<<< HEAD
-=======
-
-    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    @ToString.Exclude
-    Cart cart;
->>>>>>> 69320252706cb84eef3f4666440b8312055c7ba3
-
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     @ToString.Exclude
     Cart cart;

@@ -1,35 +1,13 @@
-<<<<<<< HEAD
 package com.example.beprojectweb.entity;
 
-import jakarta.persistence.Embeddable;
-import lombok.*;
-import lombok.experimental.FieldDefaults;
-
-import java.io.Serializable;
-
-@Embeddable
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
-@FieldDefaults(level = AccessLevel.PRIVATE)
-@EqualsAndHashCode // 👉 Lombok sẽ tự generate equals() và hashCode()
-public class key implements Serializable {
-    Long id;
-    Long userId;
-    String key;
-=======
-package com.example.beprojectweb.entity;
-
-import jakarta.persistence.Embeddable;
+import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import java.io.Serializable;
 import java.util.UUID;
 
-@Embeddable
+@Entity
 @Getter
 @Setter
 @NoArgsConstructor
@@ -37,10 +15,12 @@ import java.util.UUID;
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @EqualsAndHashCode
-public class key implements Serializable {
-    UUID id;
+@Table(name = "game_keys")
+public class Key implements Serializable {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    Long id;
     UUID userId;
     String gameName;
-    String key;
->>>>>>> 69320252706cb84eef3f4666440b8312055c7ba3
+    String gameKey;
 }

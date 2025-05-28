@@ -6,5 +6,5 @@ import java.util.List;
 import java.util.UUID;
 
 public interface IKeyService {
-    List<KeyResponse> getKeysByUserId(UUID userId);
+    List<KeyResponse> getKeysByUserId(Long userId);
 }
