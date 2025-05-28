@@ -8,7 +8,7 @@ spring:
   datasource:
     url: jdbc:mysql://localhost:3306/beprojectweb
     username: root
-    password: Trandat123
+    password: Danhnguyen2003
   jpa:
     hibernate:
       ddl-auto: update
@@ -25,7 +25,6 @@ spring:
           auth: true
           starttls:
             enable: true
-
 
 springdoc:
   api-docs:

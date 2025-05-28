@@ -28,6 +28,7 @@ public class AuthController {
     AuthenticationService authenticationService;
     UserService userService;
 
+<<<<<<< HEAD
     @GetMapping("/loginSuccess")
     public String loginSuccess() {
         return "loginSuccess"; // bạn có thể trả view hoặc JSON tùy ý
@@ -38,6 +39,8 @@ public class AuthController {
         return "loginFailure";
     }
 
+=======
+>>>>>>> 69320252706cb84eef3f4666440b8312055c7ba3
     @PostMapping("/signup")
     APIResponse<User> createUser(@RequestBody @Valid UserCreationRequest request) {
         APIResponse apiResponse = new APIResponse();
