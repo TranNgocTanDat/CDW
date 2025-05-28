@@ -29,4 +29,9 @@ public class Product {
     BigDecimal price;
     int stock;
     String img;
+<<<<<<< HEAD
+=======
+
+
+>>>>>>> 69320252706cb84eef3f4666440b8312055c7ba3
 }

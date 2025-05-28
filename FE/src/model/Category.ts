@@ -4,17 +4,22 @@ export interface Category {
   cate_ID: number;
   name: string;
   description: string;
-  productList: Product[];  // Mảng chứa các sản phẩm thuộc category này
+  urlImage: string,
+  count: number;  
+  productList: Product[];  
 }
 
 export interface CategoryRequest {
     name: string;
     description: string;
+    urlImage: string;
   }
 
 export interface CategoryResponse {
   cate_ID: number;
   name: string;
   description: string;
+  urlImage: string;
+  count: number;
   productList: Product[];
 }

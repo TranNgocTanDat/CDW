@@ -3,7 +3,6 @@ import { Input } from "@/components/ui/input";
 import type AuthenticationReuquest from "@/model/Authentication";
 import authApi from "@/services/authApi";
 import { useMutation } from "@tanstack/react-query";
-import { Link, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import {
   Card,
@@ -18,9 +17,10 @@ import { Label } from "@/components/ui/label";
 import { Loader2 } from "lucide-react";
 import { useDispatch } from "react-redux";
 import { loginSuccess } from "@/redux/authSlice";
+import { Link, useNavigate } from "react-router-dom";
 
 const LoginPage = () => {
-  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -32,17 +32,22 @@ const LoginPage = () => {
     mutationFn: authApi.login,
     onSuccess: (data) => {
       console.log("Đăng nhập thành công", data);
-      
-      dispatch(loginSuccess({ token: data.token }));
-      localStorage.setItem("token", data.token)
-      navigate({ to: "/" });
+
+      dispatch(loginSuccess({ token: data.token, userResponse: data.userResponse }));
+      localStorage.setItem("token", data.token);
+      const roles = data.userResponse.roles;
+      if (roles.includes("ADMIN")) {
+        navigate("/admin");
+      } else {
+        navigate("/");
+      }
     },
   });
 
   const handleLogin = (event: React.FormEvent<HTMLFormElement>) => {
-    console.log("Đăng nhập với", { username, password });
+    console.log("Đăng nhập với", { email, password });
     event.preventDefault(); // Ngăn reload trang
-    const authRequest: AuthenticationReuquest = { username, password };
+    const authRequest: AuthenticationReuquest = { email, password };
     login.mutate(authRequest);
   };
 
@@ -71,12 +76,12 @@ const LoginPage = () => {
             <div className="space-y-2">
               <Label htmlFor="email">Email</Label>
               <Input
-                // id="email"
-                // type="email"
-                // placeholder="name@example.com"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-                // required
+                id="email"
+                type="email"
+                placeholder="name@example.com"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
               />
             </div>
             <div className="space-y-2">
@@ -105,12 +110,27 @@ const LoginPage = () => {
                 "Sign In"
               )}
             </Button>
+            <Button
+              variant="outline"
+              className="w-full mt-4 flex items-center justify-center gap-2"
+              onClick={() => {
+                window.location.href =
+                  "http://localhost:8080//api/oauth2/authorization/google";
+              }}
+            >
+              <img
+                src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Google_%22G%22_Logo.svg/512px-Google_%22G%22_Logo.svg.png"
+                alt="Google Logo"
+                className="w-5 h-5"
+              />
+              Continue with Google
+            </Button>
           </form>
         </CardContent>
         <CardFooter className="flex justify-center">
           <p className="text-sm text-muted-foreground">
             Don&apos;t have an account? {/* auth/register */}
-            <Link to="/" className="text-primary hover:underline">
+            <Link to="/register" className="text-primary hover:underline">
               Sign up
             </Link>
           </p>
@@ -120,7 +140,4 @@ const LoginPage = () => {
   );
 };
 export default LoginPage;
-function setAuth(arg0: { token: string; }): any {
-  throw new Error("Function not implemented.");
-}
 
