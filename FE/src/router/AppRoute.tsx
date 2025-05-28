@@ -10,6 +10,7 @@ import ProductDetailPage from "@/page/products/ProductDetaiPage.tsx";
 import OAuth2RedirectHandler from "@/page/login/OAuth2RedirectHandler";
 import OrderPage from "@/page/order/CheckoutPage";
 import AdminPage from "@/page/admin/PageAdmin";
+import VerifyPage from "@/page/register/Verify";
 
 const route = createBrowserRouter([
   {
@@ -21,18 +22,17 @@ const route = createBrowserRouter([
       { path: "/register", element: <RegisterPage /> },
       { path: "/login", element: <LoginPage /> },
       { path: "/cart", element: <CartPage /> },
+      { path: "/verify", element: <VerifyPage /> },
       { path: "/categories/:cateId", element: <CategoryDetailPage /> }, // ✅ Route mới
-      { path: "/products/:productId", element: <ProductDetailPage/> },
+      { path: "/products/:productId", element: <ProductDetailPage /> },
       { path: "/oauth2-redirect", element: <OAuth2RedirectHandler /> },
       { path: "/create-order", element: <OrderPage /> },
     ],
-    
   },
   {
     path: "/admin",
     element: <AdminPage />,
-  }
-  
+  },
 ]);
 
 const AppRoute = () => <RouterProvider router={route} />;
