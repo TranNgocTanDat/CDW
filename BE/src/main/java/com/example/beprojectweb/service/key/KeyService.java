@@ -9,6 +9,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import static lombok.AccessLevel.PRIVATE;
@@ -22,7 +23,7 @@ public class KeyService implements IKeyService {
 
     @PreAuthorize("hasRole('USER')")
     @Override
-    public List<KeyResponse> getKeysByUserId(Long userId) {
+    public List<KeyResponse> getKeysByUserId(UUID userId) {
         List<Key> keys = keyRepository.findAll().stream()
                 .filter(k -> k.getUserId().equals(userId))
                 .sorted((a, b) -> b.getId().compareTo(a.getId())) // sắp xếp mới nhất trước
