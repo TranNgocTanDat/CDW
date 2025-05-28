@@ -3,6 +3,8 @@ package com.example.beprojectweb.dto.request.product;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import java.math.BigDecimal;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -11,8 +13,8 @@ import lombok.experimental.FieldDefaults;
 public class ProductRequest {
     String productName;
     String description;
-    double price;
+    BigDecimal price;
     int stock;
     String img;
-    private Integer cate_ID;
+    Long cateID;
 }

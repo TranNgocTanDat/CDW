@@ -5,8 +5,12 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import java.math.BigDecimal;
+import java.util.Set;
+
 @Entity
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -14,7 +18,7 @@ import lombok.experimental.FieldDefaults;
 public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    int product_ID;
+    Long productId;
 
     @ManyToOne
     @JoinColumn(name = "cate_ID", referencedColumnName = "cate_ID")
@@ -22,10 +26,7 @@ public class Product {
     Category category;
     String productName;
     String description;
-    double price;
+    BigDecimal price;
     int stock;
     String img;
-
-
-
 }

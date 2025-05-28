@@ -32,4 +32,11 @@ public class ProductController {
                 .build();
     }
 
+    @GetMapping("/{productId}")
+    public APIResponse<ProductResponse> getProductById(@PathVariable Long productId) {
+        return APIResponse.<ProductResponse>builder()
+                .result(productService.getProductById(productId))
+                .build();
+    }
+
 }

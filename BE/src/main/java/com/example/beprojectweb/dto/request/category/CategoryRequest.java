@@ -13,4 +13,5 @@ import java.util.List;
 public class CategoryRequest {
     String name;
     String description;
+    String urlImage;
 }
