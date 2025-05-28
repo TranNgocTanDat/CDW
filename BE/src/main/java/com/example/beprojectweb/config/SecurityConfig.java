@@ -1,6 +1,9 @@
 package com.example.beprojectweb.config;
 
 import com.example.beprojectweb.enums.Role;
+import com.example.beprojectweb.service.CustomOAuth2UserService;
+import com.example.beprojectweb.service.OAuth2SuccessHandler;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -21,11 +24,17 @@ import javax.crypto.spec.SecretKeySpec;
 
 @Configuration
 @EnableWebSecurity
+@RequiredArgsConstructor
 public class SecurityConfig {
 
     @Value("${jwt.signerKey}")
     String signerKey;
     private String[] PUBLIC_ENDPOINTS = {"/users", "/categories", "/products", "/auth/**"};
+<<<<<<< HEAD
+    private final CustomOAuth2UserService customOAuth2UserService;
+    private final OAuth2SuccessHandler oAuth2SuccessHandler;
+=======
+>>>>>>> 69320252706cb84eef3f4666440b8312055c7ba3
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity, JwtAuthenticationConverter jwtAuthenticationConverter) throws Exception {
@@ -38,18 +47,32 @@ public class SecurityConfig {
                                 "/webjars/**"
                         ).permitAll()
                         .requestMatchers(HttpMethod.POST, PUBLIC_ENDPOINTS).permitAll()
+<<<<<<< HEAD
+                        .requestMatchers(HttpMethod.GET,"/users", "/users/**").hasRole(Role.ADMIN.name())
+=======
                         .requestMatchers(HttpMethod.GET,"/users").hasRole(Role.ADMIN.name())
+>>>>>>> 69320252706cb84eef3f4666440b8312055c7ba3
                         .requestMatchers(HttpMethod.GET,"/users/myInfo", "/cart", "/cart-items", "/cart/user/**").hasRole(Role.USER.name())
                         .requestMatchers(HttpMethod.GET, "/categories", "/categories/**", "/products", "/products/**").permitAll()
                         .requestMatchers(HttpMethod.DELETE,"/users/**", "/categories/**").hasRole(Role.ADMIN.name())
                         .requestMatchers(HttpMethod.PUT, "/categories","/categories/**").permitAll()
+<<<<<<< HEAD
+=======
                         .requestMatchers("/api/keys/**").hasRole(Role.USER.name())
+>>>>>>> 69320252706cb84eef3f4666440b8312055c7ba3
                         .anyRequest().authenticated());
 
         httpSecurity.oauth2ResourceServer(oauth2 ->
                 oauth2.jwt(jwtConfigurer ->
                         jwtConfigurer.decoder(jwtDecoder())
                                 .jwtAuthenticationConverter(jwtAuthenticationConverter())));
+
+        httpSecurity.oauth2Login(oauth2 -> oauth2
+                .userInfoEndpoint(userInfo -> userInfo
+                        .userService(customOAuth2UserService)
+                )
+                .successHandler(oAuth2SuccessHandler)
+        );
 
         httpSecurity.csrf(csrf -> csrf.disable());
         httpSecurity.cors(Customizer.withDefaults());
@@ -75,9 +98,4 @@ public class SecurityConfig {
                 .build();
     }
 
-    // mã hóa password bằng BCrypt
-    @Bean
-    PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder(10);
-    }
 }
