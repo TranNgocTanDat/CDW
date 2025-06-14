@@ -4,16 +4,29 @@ import api from "./api";
 
 export default {
     // Lấy tất cả sản phẩm
-    getProducts: async (): Promise<ProductResponse[]> => {
-        const response = await api.get<APIResponse<ProductResponse[]>>("/products");
-        console.log(response);
+    // getProducts: async (): Promise<ProductResponse[]> => {
+    //     const response = await api.get<APIResponse<ProductResponse[]>>("/products");
+    //     console.log(response);
+    //     return response.result;
+    // },
+
+    getProducts: async (limit: number, offset: number): Promise<ProductResponse[]> => {
+        const response = await api.get<APIResponse<ProductResponse[]>>("/products", {
+          params: { limit, offset },
+        });
+        console.log("response.data", response);
         return response.result;
-    },
+      },
 
     // Lấy sản phẩm theo ID
     getProductById: async (id: number): Promise<Product> => {
         const response = await api.get<APIResponse<Product>>(`/products/${id}`);
         console.log("Full API response: ", response);
+        return response.result;
+    },
+
+    searchGames: async (keyword: string): Promise<ProductResponse[]> => {
+        const response = await api.get<APIResponse<ProductResponse[]>>("/products/search", { params: { keyword } })
         return response.result;
     },
 

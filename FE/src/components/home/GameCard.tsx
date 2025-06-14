@@ -59,115 +59,124 @@ export function GameCard(product: ProductResponse) {
   };
 
   return (
-      <>
-        <Card
-            className="overflow-hidden transition-all duration-300 group p-0"
-            onMouseEnter={() => setIsHovered(true)}
-            onMouseLeave={() => setIsHovered(false)}
-        >
-          <div className="relative aspect-[2/3] overflow-hidden rounded-none">
-            <img
-                src={product.img || "/placeholder.svg"}
-                alt={product.productName}
-                className={cn(
-                    "object-cover w-full h-full transition-transform duration-500",
-                    isHovered && "scale-110"
-                )}
-            />
-            <div className="absolute top-2 right-2 z-10">
-              <Button
-                  variant="ghost"
-                  size="icon"
-                  className="rounded-full bg-background/80 backdrop-blur-sm hover:bg-background/90"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    setIsFavorite(!isFavorite);
-                  }}
-              >
-                <Heart
-                    className={cn("h-5 w-5", isFavorite && "fill-red-500 text-red-500")}
-                />
-                <span className="sr-only">Add to favorites</span>
-              </Button>
-            </div>
-            {product.stock && (
-                <Badge className="absolute top-2 left-2 bg-green-500 hover:bg-green-600">
-                  New
-                </Badge>
+    <>
+      <Card
+        className="overflow-hidden transition-all duration-300 group p-0"
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
+      >
+        <div className="relative aspect-[2/3] overflow-hidden rounded-none">
+          <img
+            src={product.img || "/placeholder.svg"}
+            alt={product.productName}
+            className={cn(
+              "object-cover w-full h-full transition-transform duration-500",
+              isHovered && "scale-110"
             )}
-
-            <div
-                className={cn(
-                    "absolute inset-0 bg-black/60 flex flex-col items-center justify-center gap-2 opacity-0 transition-opacity duration-300",
-                    isHovered && "opacity-100"
-                )}
+          />
+          <div className="absolute top-2 right-2 z-10">
+            <Button
+              variant="ghost"
+              size="icon"
+              className="rounded-full bg-background/80 backdrop-blur-sm hover:bg-background/90"
+              onClick={(e) => {
+                e.preventDefault();
+                setIsFavorite(!isFavorite);
+              }}
             >
-              <Button className="bg-primary hover:bg-primary/90" onClick={handleAddToCart}>
-                <ShoppingCart className="mr-2 h-4 w-4" />
-                Add to Cart
-              </Button>
-              <Button className="bg-primary hover:bg-primary/90" onClick={handleDownloadClick}>
-                Download
-              </Button>
-            </div>
+              <Heart
+                className={cn(
+                  "h-5 w-5",
+                  isFavorite && "fill-red-500 text-red-500"
+                )}
+              />
+              <span className="sr-only">Add to favorites</span>
+            </Button>
           </div>
-          <CardContent className="p-4">
-            <Link to={`/products/${product.productId}`} className="block">
-              <h3 className="font-semibold text-lg line-clamp-1 hover:text-primary transition-colors">
-                {product.productName}
-              </h3>
-            </Link>
-            <div className="flex items-center mt-1">
-              <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-              <span className="text-sm ml-1">{product.stock}</span>
-            </div>
-          </CardContent>
-          <CardFooter className="p-4 pt-0 flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <span className="font-bold">${product.price.toFixed(2)}</span>
-              {product.price && (
-                  <span className="text-sm text-muted-foreground line-through">
+          {product.stock && (
+            <Badge className="absolute top-2 left-2 bg-green-500 hover:bg-green-600">
+              New
+            </Badge>
+          )}
+
+          <div
+            className={cn(
+              "absolute inset-0 bg-black/60 flex flex-col items-center justify-center gap-2 opacity-0 transition-opacity duration-300",
+              isHovered && "opacity-100"
+            )}
+          >
+            <Button
+              className="bg-primary hover:bg-primary/90"
+              onClick={handleAddToCart}
+            >
+              <ShoppingCart className="mr-2 h-4 w-4" />
+              <Link to="/cart">Add to Cart</Link>
+            </Button>
+            <Button
+              className="bg-primary hover:bg-primary/90"
+              onClick={handleDownloadClick}
+            >
+              Download
+            </Button>
+          </div>
+        </div>
+        <CardContent className="p-4">
+          <Link to={`/products/${product.productId}`} className="block">
+            <h3 className="font-semibold text-lg line-clamp-1 hover:text-primary transition-colors">
+              {product.productName}
+            </h3>
+          </Link>
+          <div className="flex items-center mt-1">
+            <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
+            <span className="text-sm ml-1">{product.stock}</span>
+          </div>
+        </CardContent>
+        <CardFooter className="p-4 pt-0 flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <span className="font-bold">${product.price.toFixed(2)}</span>
+            {product.price && (
+              <span className="text-sm text-muted-foreground line-through">
                 ${product.price.toFixed(2)}
               </span>
-              )}
-            </div>
-          </CardFooter>
-        </Card>
+            )}
+          </div>
+        </CardFooter>
+      </Card>
 
-        {showKeyModal && (
-            <div
-                className="fixed inset-0 bg-gray-900 bg-opacity-60 backdrop-blur-md flex items-center justify-center z-50"
+      {showKeyModal && (
+        <div
+          className="fixed inset-0 bg-gray-900 bg-opacity-60 backdrop-blur-md flex items-center justify-center z-50"
+          onClick={() => setShowKeyModal(false)}
+        >
+          <div
+            className="bg-white p-6 rounded-lg max-w-sm w-full shadow-lg"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <h2 className="text-xl font-semibold mb-4">Enter your key</h2>
+            <input
+              type="text"
+              value={keyInput}
+              onChange={(e) => setKeyInput(e.target.value)}
+              className="w-full border border-gray-300 rounded px-3 py-2 mb-4"
+              placeholder="Enter your key here"
+            />
+            <div className="flex justify-end gap-2">
+              <button
+                className="px-4 py-2 border rounded"
                 onClick={() => setShowKeyModal(false)}
-            >
-              <div
-                  className="bg-white p-6 rounded-lg max-w-sm w-full shadow-lg"
-                  onClick={(e) => e.stopPropagation()}
               >
-                <h2 className="text-xl font-semibold mb-4">Enter your key</h2>
-                <input
-                    type="text"
-                    value={keyInput}
-                    onChange={(e) => setKeyInput(e.target.value)}
-                    className="w-full border border-gray-300 rounded px-3 py-2 mb-4"
-                    placeholder="Enter your key here"
-                />
-                <div className="flex justify-end gap-2">
-                  <button
-                      className="px-4 py-2 border rounded"
-                      onClick={() => setShowKeyModal(false)}
-                  >
-                    Cancel
-                  </button>
-                  <button
-                      className="px-4 py-2 bg-blue-600 text-white rounded"
-                      onClick={handleKeySubmit}
-                  >
-                    Submit
-                  </button>
-                </div>
-              </div>
+                Cancel
+              </button>
+              <button
+                className="px-4 py-2 bg-blue-600 text-white rounded"
+                onClick={handleKeySubmit}
+              >
+                Submit
+              </button>
             </div>
-        )}
-      </>
+          </div>
+        </div>
+      )}
+    </>
   );
 }

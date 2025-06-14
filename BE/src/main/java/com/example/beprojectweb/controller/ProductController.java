@@ -19,16 +19,36 @@ public class ProductController {
     ProductService productService;
 
     @PostMapping
-    public APIResponse<ProductResponse> createProduct(@RequestBody ProductRequest request){
+    public APIResponse<ProductResponse> createProduct(@RequestBody ProductRequest request) {
         APIResponse apiResponse = new APIResponse<>();
         apiResponse.setResult(productService.createProduct(request));
         return apiResponse;
     }
 
+//        @GetMapping
+//    public APIResponse<List<ProductResponse>> getAllProducts(){
+//        return APIResponse.<List<ProductResponse>>builder()
+//                .result(productService.getProducts(4,10))
+//                .build();
+//    }
     @GetMapping
-    public APIResponse<List<ProductResponse>> getProducts(){
+    public APIResponse<List<ProductResponse>> getProducts(
+            @RequestParam(required = false) Integer limit,
+            @RequestParam(required = false) Integer offset) {
+
+        if (limit == null) limit = 10;
+        if (offset == null) offset = 0;
+
         return APIResponse.<List<ProductResponse>>builder()
-                .result(productService.getProducts())
+                .result(productService.getProducts(limit, offset))
+                .build();
+    }
+
+    @GetMapping("/search")
+    public APIResponse<List<ProductResponse>> searchProducts(@RequestParam String keyword) {
+        List<ProductResponse> result = productService.searchGames(keyword);
+        return APIResponse.<List<ProductResponse>>builder()
+                .result(productService.searchGames(keyword))
                 .build();
     }
 
