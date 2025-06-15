@@ -4,7 +4,10 @@ import com.example.beprojectweb.dto.request.product.ProductRequest;
 import com.example.beprojectweb.dto.response.product.ProductResponse;
 import com.example.beprojectweb.entity.Category;
 import com.example.beprojectweb.entity.Product;
+import com.example.beprojectweb.exception.AppException;
+import com.example.beprojectweb.exception.ErrorCode;
 import com.example.beprojectweb.mapper.ProductMapper;
+import com.example.beprojectweb.mapper.UserMapper;
 import com.example.beprojectweb.repository.CategoryRepository;
 import com.example.beprojectweb.repository.ProductRepository;
 import lombok.AccessLevel;
@@ -25,36 +28,32 @@ public class ProductService {
     ProductMapper productMapper;
     CategoryRepository categoryRepository;
 
-    public Product createProduct(ProductRequest request) {
-
-        // Kiểm tra cateID có null hay không
+    public ProductResponse createProduct(ProductRequest request) {
         if (request.getCate_ID() == null) {
             throw new IllegalArgumentException("Category ID must not be null");
         }
 
-        // Kiểm tra xem sản phẩm đã tồn tại theo tên chưa
         Optional<Product> optionalProduct = productRepository.findByProductName(request.getProductName());
 
         if (optionalProduct.isPresent()) {
-            // Nếu sản phẩm đã tồn tại, cập nhật số lượng tồn kho
             Product existingProduct = optionalProduct.get();
             existingProduct.setStock(existingProduct.getStock() + request.getStock());
 
-            // Có thể cập nhật thêm thông tin khác nếu muốn
             productMapper.updateProduct(existingProduct, request);
-
-            return productRepository.save(existingProduct);
+            Product savedProduct = productRepository.save(existingProduct);
+            return productMapper.toProductResponse(savedProduct); // ✅ trả về ProductResponse
         }
 
-        // Nếu là sản phẩm mới thì phải tìm Category và gán vào trước khi lưu
-        Category category = categoryRepository.findById(request .getCate_ID())
+        Category category = categoryRepository.findById(request.getCate_ID())
                 .orElseThrow(() -> new RuntimeException("Category not found"));
 
         Product newProduct = productMapper.toProduct(request);
         newProduct.setCategory(category);
 
-        return productRepository.save(newProduct);
+        Product savedProduct = productRepository.save(newProduct);
+        return productMapper.toProductResponse(savedProduct); // ✅ trả về ProductResponse
     }
+
 
     public List<ProductResponse> getAllProducts(){
         return productRepository.findAll()
@@ -83,4 +82,28 @@ public class ProductService {
         return productMapper.toProductResponse(product);
     }
 
+    public void deleteProduct(Long productId) {
+        if (!productRepository.existsById(productId)) {
+            throw new AppException(ErrorCode.UNCATEGORIZED_EXCEPTION);
+        }
+        productRepository.deleteById(productId);
+    }
+
+    public ProductResponse updateProduct(Long id, ProductRequest request) {
+        // Tìm sản phẩm theo ID
+        Product product = productRepository.findById(id)
+                .orElseThrow(() -> new AppException(ErrorCode.PRODUCT_EXISTED));
+
+        // Kiểm tra tên sản phẩm có bị trùng với sản phẩm khác không (nếu cần)
+        Optional<Product> productWithSameName = productRepository.findByProductName(request.getProductName());
+        if (productWithSameName.isPresent() && !productWithSameName.get().getProductId().equals(id)) {
+            throw new AppException(ErrorCode.PRODUCT_EXISTED); // sản phẩm trùng tên với một cái khác
+        }
+
+        // Cập nhật thông tin
+        productMapper.updateProduct(product, request); // Cập nhật vào object `product`
+        productRepository.save(product);
+
+        return productMapper.toProductResponse(product);
+    }
 }

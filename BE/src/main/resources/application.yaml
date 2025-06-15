@@ -1,7 +1,9 @@
 # C�?u hi?nh ????ng d�?n m??c ?i?nh
 server:
+  port: 8080
   servlet:
     context-path: /api
+  address: 0.0.0.0
 
   multipart:
     max-file-size: 5MB
@@ -17,7 +19,6 @@ spring:
     hibernate:
       ddl-auto: update
     show-sql: true
-
 
 
   mail:

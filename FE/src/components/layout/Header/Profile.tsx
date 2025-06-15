@@ -77,26 +77,6 @@ const Profile = () => {
     return (
         <div className="max-w-md mx-auto mt-10 p-6 bg-white shadow-lg rounded-2xl">
             <h2 className="text-2xl font-semibold text-center mb-6">My Profile</h2>
-
-            {/* {(previewUrl || user?.avatarUrl) && (
-                <div className="flex justify-center mb-4">
-                    <img
-                        src={previewUrl || `http://localhost:8080/api${user?.avatarUrl}`}
-                        alt="Avatar"
-                        className="w-24 h-24 rounded-full object-cover border"
-                    />
-                </div>
-            )}
-
-            <div className="mb-4">
-                <label className="block text-sm font-medium mb-1">Change Avatar</label>
-                <input
-                    type="file"
-                    accept="image/*"
-                    onChange={handleFileChange}
-                    ref={fileInputRef} // <- gán ref để reset
-                />
-            </div> */}
             <div className="flex justify-center mb-4">
                 <div className="relative group">
                     <img

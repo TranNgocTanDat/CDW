@@ -8,7 +8,7 @@ interface CategoryCardProps {
 
 export function CategoryCard({ category }: CategoryCardProps) {
   return (
-    <Link to="/" className="block">
+    <Link to={`/categories/${category?.cate_ID}`} className="block">
       <Card className="overflow-hidden transition-all duration-300 hover:shadow-md group p-0">
         <div className="relative aspect-square">
           <img

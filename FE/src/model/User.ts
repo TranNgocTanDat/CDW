@@ -13,6 +13,8 @@ export  interface User {
 
 // UserCreationRequest.ts
 export  interface UserCreationRequest {
+  dob: string;
+  lastName: string;
   username: string;
   password: string;
   email: string;
