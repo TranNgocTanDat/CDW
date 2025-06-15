@@ -13,11 +13,7 @@ import org.mapstruct.MappingTarget;
 @Mapper(componentModel = "spring", uses = {ProductMapper.class})
 public interface CategoryMapper {
     Category category(CategoryRequest request);
-
-
     @Mapping(source = "productList", target = "productList")  // map List<Product> -> List<ProductResponse>
-    @Mapping(target = "count", expression = "java(category.getProductList() != null ? category.getProductList().size() : 0)")
     CategoryResponse toCategoryResponse(Category category);
-
     void updateCategory(@MappingTarget Category category, CategoryUpdateRequest request);
 }

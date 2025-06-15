@@ -5,7 +5,6 @@ import jakarta.persistence.Column;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Set;
 import java.util.UUID;
@@ -22,10 +21,9 @@ public class UserResponse {
     String firstName;
     String lastName;
     String email;
-    String avatarUrl;
     String verificationCode;
     LocalDateTime verificationCodeExpireAt;
-    LocalDate dob;
+    String dob;
     Set<String> roles;
 
 }

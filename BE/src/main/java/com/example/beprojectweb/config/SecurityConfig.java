@@ -7,7 +7,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -31,25 +30,12 @@ public class SecurityConfig {
 
     @Value("${jwt.signerKey}")
     String signerKey;
-    private String[] PUBLIC_ENDPOINTS = { "/categories", "/products", "/auth/**"};
+    private String[] PUBLIC_ENDPOINTS = {"/users", "/categories", "/products", "/auth/**"};
     private final CustomOAuth2UserService customOAuth2UserService;
     private final OAuth2SuccessHandler oAuth2SuccessHandler;
 
-    @Bean
-    @Order(1)
-    public SecurityFilterChain publicResources(HttpSecurity http) throws Exception {
-        http
-                .securityMatcher("/uploads/**")
-                .authorizeHttpRequests(auth -> auth.anyRequest().permitAll())
-                .csrf(csrf -> csrf.disable())
-                .cors(cors -> cors.disable())
-                .sessionManagement(session -> session.disable());
-
-        return http.build();
-    }
 
     @Bean
-    @Order(2)
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity, JwtAuthenticationConverter jwtAuthenticationConverter) throws Exception {
         // Cấu hình quyền truy cập api
         httpSecurity.authorizeHttpRequests(request ->
@@ -60,18 +46,17 @@ public class SecurityConfig {
                                 "/webjars/**"
                         ).permitAll()
                         .requestMatchers(HttpMethod.POST, PUBLIC_ENDPOINTS).permitAll()
-                        .requestMatchers(HttpMethod.GET, "/users/myInfo").hasAnyRole(Role.USER.name(), Role.ADMIN.name())
-                        .requestMatchers(HttpMethod.GET, "/cart", "/cart-items", "/cart/user/**").hasRole(Role.USER.name())
-                        .requestMatchers(HttpMethod.GET,"/users", "/users/**").hasRole(Role.ADMIN.name())
+                        .requestMatchers(HttpMethod.GET,"/users").hasRole(Role.ADMIN.name())
+                        .requestMatchers(HttpMethod.GET,"/users/myInfo", "/cart", "/cart-items", "/cart/user/**").hasRole(Role.USER.name())
                         .requestMatchers(HttpMethod.GET, "/categories", "/categories/**", "/products", "/products/**").permitAll()
-                        .requestMatchers(HttpMethod.DELETE,"/users/**","/products/**" , "/categories/**").hasRole(Role.ADMIN.name())
-                        .requestMatchers(HttpMethod.PUT, "/categories","/categories/**", "/products/**").permitAll()
+                        .requestMatchers(HttpMethod.DELETE,"/users/**", "/categories/**").hasRole(Role.ADMIN.name())
+                        .requestMatchers(HttpMethod.PUT, "/categories","/categories/**").permitAll()
 
-
-                        .requestMatchers(HttpMethod.GET, "/api/keys/user/**").hasRole(Role.USER.name())
-                        .requestMatchers("/api/keys/**").hasAnyRole("USER", "ADMIN")
-
-                        .requestMatchers("/api/keys/**").hasRole(Role.USER.name())
+                    
+                        .requestMatchers(HttpMethod.GET, "/keys/user/**").hasRole(Role.USER.name())
+                        .requestMatchers("/keys/**").hasAnyRole("USER", "ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/keys/check").permitAll()
+                        .requestMatchers("/keys/**").hasRole(Role.USER.name())
 
 
                         .anyRequest().authenticated());

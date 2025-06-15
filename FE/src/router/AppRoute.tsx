@@ -11,8 +11,6 @@ import OAuth2RedirectHandler from "@/page/login/OAuth2RedirectHandler";
 import OrderPage from "@/page/order/CheckoutPage";
 import AdminPage from "@/page/admin/PageAdmin";
 import VerifyPage from "@/page/register/Verify";
-import UploadAvatarForm from "@/components/layout/Header/Profile";
-import SearchResultPage from "@/page/products/components/SearchPage";
 
 const route = createBrowserRouter([
   {
@@ -29,8 +27,6 @@ const route = createBrowserRouter([
       { path: "/products/:productId", element: <ProductDetailPage /> },
       { path: "/oauth2-redirect", element: <OAuth2RedirectHandler /> },
       { path: "/create-order", element: <OrderPage /> },
-      { path: "/profile", element: <UploadAvatarForm /> },
-       { path: "/search", element: <SearchResultPage /> },
     ],
   },
   {

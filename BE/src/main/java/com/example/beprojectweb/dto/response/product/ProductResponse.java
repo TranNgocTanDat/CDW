@@ -16,6 +16,5 @@ public class ProductResponse {
     BigDecimal price;
     int stock;
     String img;
-    Long cate_ID;
 
 }

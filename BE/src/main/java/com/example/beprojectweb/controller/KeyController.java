@@ -15,7 +15,7 @@ import java.util.List;
 import static lombok.AccessLevel.PRIVATE;
 
 @RestController
-@RequestMapping("/api/keys")
+@RequestMapping("/keys")
 @RequiredArgsConstructor
 @FieldDefaults(level = PRIVATE, makeFinal = true)
 public class KeyController {
@@ -36,6 +36,14 @@ public class KeyController {
     public ResponseEntity<List<KeyResponse>> getAllKeys() {
         return ResponseEntity.ok(keyService.getAllKeys());
     }
+
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+    @GetMapping("/check")
+    public ResponseEntity<Boolean> checkKey(@RequestParam("key") String key) {
+        boolean exists = keyService.checkGameKey(key);
+        return ResponseEntity.ok(exists);
+    }
+
     private Long getCurrentUserId() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         // Giả sử userId được lưu trong claim "userId" của JWT

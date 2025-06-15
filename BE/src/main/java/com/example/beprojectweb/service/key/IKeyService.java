@@ -11,4 +11,5 @@ public interface IKeyService {
 
     List<KeyResponse> getAllKeys();
 
+    boolean checkGameKey(String key);
 }

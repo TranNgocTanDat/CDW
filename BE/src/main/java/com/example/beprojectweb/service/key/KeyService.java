@@ -44,5 +44,11 @@ public class KeyService implements IKeyService {
                 .map(k -> new KeyResponse(k.getId(), k.getUserId(), k.getGameName(), k.getGameKey()))
                 .collect(Collectors.toList());
     }
+
+                @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+                public boolean checkGameKey(String inputKey) {
+                    if (inputKey == null) return false;
+                    return keyRepository.existsByGameKey(inputKey.trim());
+                }
 }
 

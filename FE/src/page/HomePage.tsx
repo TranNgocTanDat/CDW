@@ -3,7 +3,6 @@ import { GameCard } from "@/components/home/GameCard";
 import { CategoryCard } from "@/components/home/catgoryCard";
 import { Button } from "@/components/ui/button";
 import categoryApi from "@/services/categoryApi";
-import productApi from "@/services/productApi";
 import { useQuery } from "@tanstack/react-query";
 import { ChevronRight } from "lucide-react";
 import { Link } from "react-router-dom";
@@ -12,20 +11,6 @@ const HomePage = () => {
   const { data: gameCategories } = useQuery({
     queryKey: ["gameCategories"],
     queryFn: categoryApi.getCategories,
-    refetchOnWindowFocus: false,
-  });
-
-  const { data: games } = useQuery({
-    queryKey: ["games", { limit: 2, offset: 0 }],
-    queryFn: () => productApi.getProducts(4, 0),
-    refetchOnWindowFocus: false,
-  }); 
-  const { data: gamesSpecial } = useQuery({
-    queryKey: ["gamesSpecial", { limit: 2, offset: 2 }],
-    queryFn: ({ queryKey }) => {
-      const [, params] = queryKey as [string, { limit: number; offset: number }];
-      return productApi.getProducts(params.limit, params.offset);
-    },
     refetchOnWindowFocus: false,
   });
   return (
@@ -74,7 +59,7 @@ const HomePage = () => {
             View all <ChevronRight className="ml-1 h-4 w-4" />
           </Link>
         </div>
-        {games && <FeaturedGameCarousel featuredGames={games} />}
+        <FeaturedGameCarousel />
       </section>
       <section className="container py-12">
         <div className="flex items-center justify-between mb-6">
@@ -113,21 +98,38 @@ const HomePage = () => {
             </Link>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-          {!games ? (
-            <p>Đang tải danh mục...</p>
-          ) : (
-            games.map((game) => (
-              <GameCard
-                productName={game.productName}
-                img={game.img || "/placeholder.svg?height=300&width=200"}
-                price={game.price}
-                stock={game.stock} 
-                productId={game.productId} 
-                categoryName={game.categoryName} 
-                description={game.description}              
+            <GameCard
+              title="Cyber Nexus 2077"
+              imageUrl="/placeholder.svg?height=300&width=200"
+              price={29.99}
+              originalPrice={59.99}
+              discount={50}
+              rating={4.5}
             />
-            ))
-          )}
+            <GameCard
+              title="Eternal Quest IX"
+              imageUrl="/placeholder.svg?height=300&width=200"
+              price={19.99}
+              originalPrice={39.99}
+              discount={50}
+              rating={4.8}
+            />
+            <GameCard
+              title="Galaxy Warriors"
+              imageUrl="/placeholder.svg?height=300&width=200"
+              price={24.99}
+              originalPrice={49.99}
+              discount={50}
+              rating={4.2}
+            />
+            <GameCard
+              title="Medieval Legends"
+              imageUrl="/placeholder.svg?height=300&width=200"
+              price={14.99}
+              originalPrice={29.99}
+              discount={50}
+              rating={4.6}
+            />
           </div>
         </div>
       </section>
@@ -142,21 +144,34 @@ const HomePage = () => {
           </Link>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-        {!gamesSpecial ? (
-            <p>Đang tải danh mục...</p>
-          ) : (
-            gamesSpecial.map((game) => (
-              <GameCard
-                productName={game.productName}
-                img={game.img || "/placeholder.svg?height=300&width=200"}
-                price={game.price}
-                stock={game.stock} 
-                productId={game.productId} 
-                categoryName={game.categoryName} 
-                description={game.description}              
-            />
-            ))
-          )}
+          <GameCard
+            title="Shadow Realm"
+            imageUrl="/placeholder.svg?height=300&width=200"
+            price={59.99}
+            rating={4.9}
+            isNew={true}
+          />
+          <GameCard
+            title="Astral Frontiers"
+            imageUrl="/placeholder.svg?height=300&width=200"
+            price={49.99}
+            rating={4.7}
+            isNew={true}
+          />
+          <GameCard
+            title="Dragon's Keep"
+            imageUrl="/placeholder.svg?height=300&width=200"
+            price={39.99}
+            rating={4.5}
+            isNew={true}
+          />
+          <GameCard
+            title="Neon Drift"
+            imageUrl="/placeholder.svg?height=300&width=200"
+            price={29.99}
+            rating={4.3}
+            isNew={true}
+          />
         </div>
       </section>
     </main>

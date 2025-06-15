@@ -1,7 +1,6 @@
 package com.example.beprojectweb.controller;
 
 import com.example.beprojectweb.dto.request.order.PaymentMethodRequest;
-import com.example.beprojectweb.dto.response.APIResponse;
 import com.example.beprojectweb.dto.response.order.OrderResponse;
 import com.example.beprojectweb.service.order.IOrderService;
 import lombok.RequiredArgsConstructor;
@@ -40,9 +39,8 @@ public class OrderController {
     }
 
     @GetMapping
-    public APIResponse<List<OrderResponse>> getMyOrders() {
-        return APIResponse.<List<OrderResponse>>builder()
-                .result(orderService.getAllOrder())
-                .build();
+    public ResponseEntity<List<OrderResponse>> getMyOrders() {
+        List<OrderResponse> orders = orderService.getAllOrder();
+        return ResponseEntity.ok(orders);
     }
 }
