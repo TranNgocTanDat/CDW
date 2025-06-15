@@ -16,6 +16,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestClient;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.UUID;
@@ -60,10 +61,17 @@ public class UserController {
                 .build();
     }
 
-    @PutMapping("/{userId}")
-    APIResponse<UserResponse> updateUser(@PathVariable UUID userId, @RequestBody UserUpdateRequest request) {
+    @PutMapping("/me/update")
+    APIResponse<UserResponse> updateUser( @RequestBody UserUpdateRequest request) {
         return APIResponse.<UserResponse>builder()
-                .result(userService.updateUser(userId, request))
+                .result(userService.updateUser(request))
+                .build();
+    }
+
+    @PostMapping("/me/avatar")
+    public APIResponse<UserResponse> uploadMyAvatar(@RequestParam("file") MultipartFile file) {
+        return APIResponse.<UserResponse>builder()
+                .result(userService.uploadAvatar(file))
                 .build();
     }
 

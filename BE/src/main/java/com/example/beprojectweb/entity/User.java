@@ -27,8 +27,10 @@ public class User{
     String password;
     String firstName;
     String lastName;
-//    @Column(unique = true, nullable = false)
+    //    @Column(unique = true, nullable = false)
     String email;
+    @Column(name = "avatar_url")
+    String avatarUrl;
     LocalDate dob;
     @Column(nullable = false)
     boolean enabled = false;
