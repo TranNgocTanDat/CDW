@@ -4,15 +4,52 @@ import { useState, useEffect, useCallback } from "react"
 import { ChevronLeft, ChevronRight } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
+import { Badge } from "@/components/ui/badge"
 import { Card, CardContent } from "../ui/card"
 import { useMobile } from "@/hooks/use-moblie"
-import type {  ProductResponse } from "@/model/Product"
 
-interface FeaturedGameCarouselProps {
-  featuredGames: ProductResponse[]
-}
+const featuredGames = [
+  {
+    id: 1,
+    title: "Stellar Odyssey",
+    description: "Embark on an epic journey through the cosmos in this open-world space adventure.",
+    imageUrl: "https://cn.i.cdn.ti-platform.com/content/336/stellar-odyssey/game/uk/stellaodyssey-1600x900-en.a3f12116.jpg?height=500&width=1000",
+    price: 59.99,
+    discount: 0,
+    badge: "Pre-order",
+  },
+  {
+    id: 2,
+    title: "Mythic Realms",
+    description: "Battle legendary creatures and explore ancient worlds in this fantasy RPG.",
+    imageUrl: "https://www.uploadvr.com/content/images/size/w1024/format/webp/2023/10/Mythic-Realms.png?height=500&width=1000",
+    price: 49.99,
+    originalPrice: 69.99,
+    discount: 28,
+    badge: "Sale",
+  },
+  {
+    id: 3,
+    title: "Velocity Rush",
+    description: "Experience high-octane racing with next-gen graphics and realistic physics.",
+    imageUrl: "https://img.itch.zone/aW1hZ2UvMjA4MjU5LzQzNzQ1MTcucG5n/original/Ka50UD.png?height=500&width=1000",
+    price: 39.99,
+    discount: 0,
+    badge: "New Release",
+  },
+  {
+    id: 4,
+    title: "Tactical Warfare",
+    description: "Lead your squad through intense combat scenarios in this strategic shooter.",
+    imageUrl: "https://wallup.net/wp-content/uploads/2019/10/956382-battlefield-shooter-tactical-military-action-fighting-warrior-futuristic-sci-fi.jpg",
+    price: 29.99,
+    originalPrice: 59.99,
+    discount: 50,
+    badge: "Sale",
+  },
+]
 
-export function FeaturedGameCarousel({ featuredGames }: FeaturedGameCarouselProps) {
+export function FeaturedGameCarousel() {
   const [currentIndex, setCurrentIndex] = useState(0)
   const [isAnimating, setIsAnimating] = useState(false)
   const isMobile = useMobile()
@@ -53,8 +90,8 @@ export function FeaturedGameCarousel({ featuredGames }: FeaturedGameCarouselProp
       <Card className="overflow-hidden border-0 rounded-xl py-0">
         <div className="relative aspect-[21/9] md:aspect-[21/9]">
           <img
-            src={currentGame.img || "/placeholder.svg"}
-            alt={currentGame.productName}
+            src={currentGame.imageUrl || "/placeholder.svg"}
+            alt={currentGame.title}
             // fill
             className="object-cover transition-transform duration-500 ease-in-out w-full h-[548px] "
           />
@@ -62,7 +99,7 @@ export function FeaturedGameCarousel({ featuredGames }: FeaturedGameCarouselProp
 
           <CardContent className="absolute inset-0 flex items-center p-6 md:p-10">
             <div className="max-w-lg space-y-4">
-              {/* {currentGame.badge && (
+              {currentGame.badge && (
                 <Badge
                   className={
                     currentGame.discount > 0 ? "bg-red-500 hover:bg-red-600" : "bg-primary hover:bg-primary/90"
@@ -70,21 +107,24 @@ export function FeaturedGameCarousel({ featuredGames }: FeaturedGameCarouselProp
                 >
                   {currentGame.badge}
                 </Badge>
-              )} */}
-              <h3 className="text-2xl md:text-4xl font-bold text-white">{currentGame.productName}</h3>
+              )}
+              <h3 className="text-2xl md:text-4xl font-bold text-white">{currentGame.title}</h3>
               <p className="text-white/80 hidden md:block">{currentGame.description}</p>
 
               <div className="flex items-center gap-2">
                 <span className="text-xl font-bold text-white">${currentGame.price.toFixed(2)}</span>
-                {currentGame.price && (
-                  <span className="text-sm text-white/70 line-through">${currentGame.price.toFixed(2)}</span>
+                {currentGame.originalPrice && (
+                  <span className="text-sm text-white/70 line-through">${currentGame.originalPrice.toFixed(2)}</span>
                 )}
               </div>
 
               <div className="flex flex-col sm:flex-row gap-3 pt-2">
                 <Button className="bg-primary hover:bg-primary/90">
-                    Buy Now
-               
+                  {currentGame.discount > 0
+                    ? "Buy Now"
+                    : currentGame.badge === "Pre-order"
+                      ? "Pre-order Now"
+                      : "Buy Now"}
                 </Button>
                 <Button variant="outline" className="text-white border-white hover:bg-white/10">
                   View Details

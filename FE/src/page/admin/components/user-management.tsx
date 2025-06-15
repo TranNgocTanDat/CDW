@@ -1,113 +1,56 @@
-"use client";
+"use client"
 
-import { useState } from "react";
+import { useState } from "react"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Badge } from "@/components/ui/badge"
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import {
-
   DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Search , UserPlus, Filter } from "lucide-react";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import type { UserCreationRequest, UserResponse } from "@/model/User";
-import userApi from "@/services/userApi";
-import { AddUserModal } from "@/components/users/AddUserModal";
+} from "@/components/ui/dropdown-menu"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { Search, MoreHorizontal, UserPlus, Filter } from "lucide-react"
+import { useQuery, useQueryClient } from "@tanstack/react-query"
+import type { UserResponse } from "@/model/User"
+import userApi from "@/services/userApi"
+
 
 export function UserManagement() {
-  const [searchTerm, setSearchTerm] = useState("");
+  const [searchTerm, setSearchTerm] = useState("")
   const queryClient = useQueryClient();
-  const [open, setOpen] = useState(false);
-  const [userEditing, setUserEditing] = useState<UserResponse | null>(null);
 
-  const { data: users } = useQuery<UserResponse[]>({
+  const {
+    data: users
+  } = useQuery<UserResponse[]>({
     queryKey: ["users"],
     queryFn: userApi.getUsers,
     refetchOnWindowFocus: false,
   });
 
-  const addUserMutation = useMutation({
-    mutationFn: userApi.addUser,
-    onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: ["users"],
-      });
-      console.log("User added successfully");
-    },
-  });
-
-  const filteredUsers = (users ?? []).filter(
+  const filteredUsers =(users ?? []).filter(
     (user) =>
       user.username.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      user.email.toLowerCase().includes(searchTerm.toLowerCase())
-  );
-
-  const handleSaveUser = async (data: UserCreationRequest) => {
-    const userToSave = {
-      ...data,
-      lastName: data.lastName || "",
-      dob: data.dob || "",
-      password: data.password || "12341234",
-    };
-
-    addUserMutation.mutate(userToSave);
-  };
-
-  const handleDeleteUser = (user: UserResponse) => {
-    userApi
-      .deleteUser(user.id)
-      .then(() => {
-        queryClient.invalidateQueries({
-          queryKey: ["users"],
-        });
-        console.log("User deleted successfully");
-      })
-      .catch((error) => {
-        console.error("Error deleting user:", error);
-      });
-  };
-
-  
+      user.email.toLowerCase().includes(searchTerm.toLowerCase()),
+  )
 
   return (
     <div className="space-y-6 mx-3">
       <div className="flex justify-between items-center">
         <div>
           <h1 className="text-3xl font-bold">User Management</h1>
-          <p className="text-muted-foreground">
-            Manage user accounts and permissions
-          </p>
+          <p className="text-muted-foreground">Manage user accounts and permissions</p>
         </div>
-        <Button onClick={() => setOpen(true)}>
+        <Button>
           <UserPlus className="mr-2 h-4 w-4" />
-          Thêm người dùng
+          Add User
         </Button>
       </div>
-      <AddUserModal
-        open={open}
-        onClose={() => {
-          setOpen(false);
-          setUserEditing(null);
-        }}
-        onSave={handleSaveUser}
-        user={userEditing}
-      />
 
       <Card>
         <CardHeader>
@@ -135,9 +78,11 @@ export function UserManagement() {
             <TableHeader>
               <TableRow>
                 <TableHead>User</TableHead>
-                <TableHead>FirstName</TableHead>
-                <TableHead>LastName</TableHead>
+                <TableHead>Role</TableHead>
+                <TableHead>Status</TableHead>
+                <TableHead>Join Date</TableHead>
                 <TableHead>Orders</TableHead>
+                <TableHead>Total Spent</TableHead>
                 <TableHead className="w-[70px]"></TableHead>
               </TableRow>
             </TableHeader>
@@ -148,7 +93,7 @@ export function UserManagement() {
                     <div className="flex items-center space-x-3">
                       <Avatar className="h-8 w-8">
                         <AvatarImage
-                          src={`http://localhost:8080/api${user?.avatarUrl}`}
+                          src={`https://ui-avatars.com/api/?name=${user.username}&background=random`}
                           alt={user.username}
                         />
                         <AvatarFallback>
@@ -160,9 +105,7 @@ export function UserManagement() {
                       </Avatar>
                       <div>
                         <p className="text-sm font-medium">{user.username}</p>
-                        <p className="text-xs text-muted-foreground">
-                          {user.email}
-                        </p>
+                        <p className="text-xs text-muted-foreground">{user.email}</p>
                       </div>
                     </div>
                   </TableCell>
@@ -180,19 +123,24 @@ export function UserManagement() {
                   </TableCell> */}
                   <TableCell className="text-sm">{user.firstName}</TableCell>
                   <TableCell className="text-sm">{user.lastName}</TableCell>
-                  <TableCell className="text-sm font-medium">
-                    </TableCell>
+                  <TableCell className="text-sm font-medium">{user.username}</TableCell>
                   <TableCell>
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
-                        <Button
-                          size="sm"
-                          variant="destructive"
-                          onClick={() => (handleDeleteUser(user))}
-                        >
-                          Xóa
+                        <Button variant="ghost" className="h-8 w-8 p-0">
+                          <MoreHorizontal className="h-4 w-4" />
                         </Button>
                       </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end">
+                        <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                        <DropdownMenuItem>View Details</DropdownMenuItem>
+                        <DropdownMenuItem>Edit User</DropdownMenuItem>
+                        <DropdownMenuItem>View Orders</DropdownMenuItem>
+                        <DropdownMenuSeparator />
+                        {/* <DropdownMenuItem className={user.status === "active" ? "text-red-600" : "text-green-600"}>
+                          {user.status === "active" ? "Suspend User" : "Activate User"}
+                        </DropdownMenuItem> */}
+                      </DropdownMenuContent>
                     </DropdownMenu>
                   </TableCell>
                 </TableRow>
@@ -202,5 +150,5 @@ export function UserManagement() {
         </CardContent>
       </Card>
     </div>
-  );
+  )
 }
