@@ -19,11 +19,14 @@ const HomePage = () => {
     queryKey: ["games", { limit: 2, offset: 0 }],
     queryFn: () => productApi.getProducts(4, 0),
     refetchOnWindowFocus: false,
-  }); 
+  });
   const { data: gamesSpecial } = useQuery({
     queryKey: ["gamesSpecial", { limit: 2, offset: 2 }],
     queryFn: ({ queryKey }) => {
-      const [, params] = queryKey as [string, { limit: number; offset: number }];
+      const [, params] = queryKey as [
+        string,
+        { limit: number; offset: number }
+      ];
       return productApi.getProducts(params.limit, params.offset);
     },
     refetchOnWindowFocus: false,
@@ -90,12 +93,11 @@ const HomePage = () => {
           {!gameCategories ? (
             <p>Đang tải danh mục...</p>
           ) : (
-            gameCategories.map((category) => (
-              <CategoryCard
-                key={category.cate_ID}
-                category={category}
-              />
-            ))
+            gameCategories
+              .slice(0, 4)
+              .map((category) => (
+                <CategoryCard key={category.cate_ID} category={category} />
+              ))
           )}
         </div>
       </section>
@@ -113,21 +115,21 @@ const HomePage = () => {
             </Link>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-          {!games ? (
-            <p>Đang tải danh mục...</p>
-          ) : (
-            games.map((game) => (
-              <GameCard
-                productName={game.productName}
-                img={game.img || "/placeholder.svg?height=300&width=200"}
-                price={game.price}
-                stock={game.stock} 
-                productId={game.productId} 
-                categoryName={game.categoryName} 
-                description={game.description}              
-            />
-            ))
-          )}
+            {!games ? (
+              <p>Đang tải danh mục...</p>
+            ) : (
+              games.map((game) => (
+                <GameCard
+                  productName={game.productName}
+                  img={game.img || "/placeholder.svg?height=300&width=200"}
+                  price={game.price}
+                  stock={game.stock}
+                  productId={game.productId}
+                  categoryName={game.categoryName}
+                  description={game.description}
+                />
+              ))
+            )}
           </div>
         </div>
       </section>
@@ -142,7 +144,7 @@ const HomePage = () => {
           </Link>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-        {!gamesSpecial ? (
+          {!gamesSpecial ? (
             <p>Đang tải danh mục...</p>
           ) : (
             gamesSpecial.map((game) => (
@@ -150,11 +152,11 @@ const HomePage = () => {
                 productName={game.productName}
                 img={game.img || "/placeholder.svg?height=300&width=200"}
                 price={game.price}
-                stock={game.stock} 
-                productId={game.productId} 
-                categoryName={game.categoryName} 
-                description={game.description}              
-            />
+                stock={game.stock}
+                productId={game.productId}
+                categoryName={game.categoryName}
+                description={game.description}
+              />
             ))
           )}
         </div>

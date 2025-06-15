@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import type { RootState } from "@/redux/store";
 import cartApi from "@/services/cartApi";
 import { addCartItem } from "@/redux/cartSlice";
+import keyApi from "@/services/keyApi";
 
 const ProductDetailPage = () => {
   const { productId } = useParams<{ productId: string }>();
@@ -59,14 +60,42 @@ const ProductDetailPage = () => {
     setShowKeyModal(true);
   };
 
-  const handleKeySubmit = () => {
-    if (!keyInput) {
+  const handleKeySubmit = async () => {
+    console.log("Submitted key:", keyInput);
+
+    if (!keyInput.trim()) {
       alert("Please enter a key");
       return;
     }
-    alert(`Key submitted: ${keyInput}`);
-    setShowKeyModal(false);
-    setKeyInput("");
+    const isValid = await keyApi.checkGameKey(keyInput.trim());
+    try {
+
+      console.log("API check key result:", isValid);
+
+      if (isValid) {
+        // Nội dung file text đơn giản (không phải file Word chuẩn .docx)
+        const content = `🎮 Thank you for activating ${product?.productName}!\n\nYour key: ${keyInput.trim()}`;
+        const blob = new Blob([content], { type: "text/plain" });
+
+        // Tạo link download
+        const link = document.createElement("a");
+        link.href = URL.createObjectURL(blob);
+        link.download = `${product?.productId}.txt`; // Đổi thành .txt cho phù hợp
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+
+        alert("Download started!");
+      } else {
+        alert("Invalid key. Please try again.");
+      }
+    } catch (error) {
+      console.error("Key check failed", error);
+      alert("Something went wrong. Please try again.");
+    } finally {
+      setShowKeyModal(false);
+      setKeyInput("");
+    }
   };
 
   if (error) {

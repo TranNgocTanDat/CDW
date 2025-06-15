@@ -31,7 +31,7 @@ export function AddEditProductModal({ open, onClose, onSave, product }: Props) {
         price: product.price,
         stock: product.stock,
         img: product.img,
-        cate_ID:  product.cate_ID, // Assuming categoryId is available in product
+        cate_ID:  product?.cate_ID ?? undefined as unknown as number, // Assuming categoryId is available in product
       });
     } else {
       setForm({
@@ -77,7 +77,7 @@ export function AddEditProductModal({ open, onClose, onSave, product }: Props) {
           <Input
             placeholder="Category"
             value={form.cate_ID}
-            onChange={(e) => setForm({ ...form, stock: Number(e.target.value) })}
+            onChange={(e) => setForm({ ...form, cate_ID: Number(e.target.value) })}
           />
           <Input
             placeholder="Image URL"
