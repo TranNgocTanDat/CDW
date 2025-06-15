@@ -1,11 +1,24 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Badge } from "@/components/ui/badge"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
+import { useState } from "react";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Badge } from "@/components/ui/badge";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -13,38 +26,89 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import { Search, MoreHorizontal, Plus, Filter, Star } from "lucide-react"
-import { useQuery,  } from "@tanstack/react-query"
-import type {  ProductResponse } from "@/model/Product"
-import productApi from "@/services/productApi"
+} from "@/components/ui/dropdown-menu";
+import { Search, MoreHorizontal, Plus, Filter, Star } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
+import type { ProductRequest, ProductResponse } from "@/model/Product";
+import productApi from "@/services/productApi";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { AddEditProductModal } from "./EditProductModal";
 
 export function GameManagement() {
+  const [searchTerm, setSearchTerm] = useState("");
+  const [open, setOpen] = useState(false);
+  const [productEditing, setProductEditing] = useState<ProductResponse | null>(
+    null
+  );
+  const queryClient = useQueryClient();
 
-  const [searchTerm, setSearchTerm] = useState("")
-
-  const {
-    data: products
-  } = useQuery<ProductResponse[]>({
+  const { data: products } = useQuery<ProductResponse[]>({
     queryKey: ["products"],
-    queryFn: productApi.getProducts,
+    queryFn: productApi.getAllProducts,
     refetchOnWindowFocus: false,
   });
 
-  const filteredGames = (products?? []).filter((game) => game.productName.toLowerCase().includes(searchTerm.toLowerCase()))
+  const filteredGames = (products ?? []).filter((game) =>
+    game.productName.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  const createProductMutation = useMutation({
+    mutationFn: productApi.createProduct,
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["products"] }),
+  });
+
+  const updateProductMutation = useMutation({
+    mutationFn: ({ id, data }: { id: number; data: ProductRequest }) =>
+      productApi.updateProduct(id, data),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["products"] }),
+  });
+
+  const deleteProductMutation = useMutation({
+    mutationFn: productApi.deleteProduct,
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["products"] }),
+  });
+
+  const handleSaveProduct = async (data: ProductRequest, id?: number) => {
+    try {
+      if (id) {
+        await updateProductMutation.mutateAsync({ id, data });
+      } else {
+        await createProductMutation.mutateAsync(data);
+      }
+  
+      // chỉ đóng modal nếu không lỗi
+      setOpen(false);
+      setProductEditing(null);
+    } catch (error) {
+      console.error("Save failed", error);
+      // Optionally: show error toast or alert here
+    }
+  };
 
   return (
     <div className="space-y-6 mx-3">
       <div className="flex justify-between items-center">
         <div>
           <h1 className="text-3xl font-bold">Game Management</h1>
-          <p className="text-muted-foreground">Manage your game catalog and inventory</p>
+          <p className="text-muted-foreground">
+            Manage your game catalog and inventory
+          </p>
         </div>
-        <Button>
+        <Button onClick={() => setOpen(true)}>
           <Plus className="mr-2 h-4 w-4" />
           Add Game
         </Button>
       </div>
+
+      <AddEditProductModal
+        open={open}
+        onClose={() => {
+          setOpen(false);
+          setProductEditing(null);
+        }}
+        onSave={handleSaveProduct}
+        product={productEditing}
+      />
 
       <Card>
         <CardHeader>
@@ -75,8 +139,6 @@ export function GameManagement() {
                 <TableHead>Price</TableHead>
                 <TableHead>Categories</TableHead>
                 <TableHead>Rating</TableHead>
-                <TableHead>Release Date</TableHead>
-                <TableHead>Status</TableHead>
                 <TableHead className="w-[70px]"></TableHead>
               </TableRow>
             </TableHeader>
@@ -93,25 +155,34 @@ export function GameManagement() {
                         />
                       </div>
                       <div>
-                        <p className="text-sm font-medium">{game.productName}</p>
-                        <p className="text-xs text-muted-foreground">{game.productName}</p>
+                        <p className="text-sm font-medium">
+                          {game.productName}
+                        </p>
+                        <p className="text-xs text-muted-foreground">
+                          {game.productName}
+                        </p>
                       </div>
                     </div>
                   </TableCell>
                   <TableCell>
                     <div>
-                      <p className="text-sm font-medium">{(game.price)}</p>
+                      <p className="text-sm font-medium">{game.price}</p>
                       {game.price && (
-                        <p className="text-xs text-muted-foreground line-through">{(game.price)}</p>
+                        <p className="text-xs text-muted-foreground line-through">
+                          {game.price}
+                        </p>
                       )}
                     </div>
                   </TableCell>
                   <TableCell>
                     <div className="flex flex-wrap gap-1">
-                        <Badge key={game.categoryName} variant="secondary" className="text-xs">
-                          {game.categoryName}
-                        </Badge>
-                      
+                      <Badge
+                        key={game.productName}
+                        variant="secondary"
+                        className="text-xs"
+                      >
+                        {game.categoryName}
+                      </Badge>
                     </div>
                   </TableCell>
                   <TableCell>
@@ -134,11 +205,31 @@ export function GameManagement() {
                       <DropdownMenuContent align="end">
                         <DropdownMenuLabel>Actions</DropdownMenuLabel>
                         <DropdownMenuItem>View Details</DropdownMenuItem>
-                        <DropdownMenuItem>Edit Game</DropdownMenuItem>
+                        <DropdownMenuItem
+                          onClick={() => {
+                            setProductEditing(game); // ép kiểu nếu cần
+                            setOpen(true);
+                          }}
+                        >
+                          Edit Game
+                        </DropdownMenuItem>
                         <DropdownMenuItem>View Analytics</DropdownMenuItem>
                         <DropdownMenuSeparator />
                         <DropdownMenuItem>Duplicate</DropdownMenuItem>
-                        <DropdownMenuItem className="text-red-600">Delete Game</DropdownMenuItem>
+                        <DropdownMenuItem
+                          className="text-red-600"
+                          onClick={() => {
+                            if (
+                              confirm(
+                                "Are you sure you want to delete this game?"
+                              )
+                            ) {
+                              deleteProductMutation.mutate(game.productId);
+                            }
+                          }}
+                        >
+                          Delete Game
+                        </DropdownMenuItem>
                       </DropdownMenuContent>
                     </DropdownMenu>
                   </TableCell>
@@ -149,5 +240,5 @@ export function GameManagement() {
         </CardContent>
       </Card>
     </div>
-  )
+  );
 }

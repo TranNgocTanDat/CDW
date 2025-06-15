@@ -60,11 +60,12 @@ public class SecurityConfig {
                                 "/webjars/**"
                         ).permitAll()
                         .requestMatchers(HttpMethod.POST, PUBLIC_ENDPOINTS).permitAll()
-                        .requestMatchers(HttpMethod.GET,"/users/myInfo", "/cart", "/cart-items", "/cart/user/**").hasRole(Role.USER.name())
+                        .requestMatchers(HttpMethod.GET, "/users/myInfo").hasAnyRole(Role.USER.name(), Role.ADMIN.name())
+                        .requestMatchers(HttpMethod.GET, "/cart", "/cart-items", "/cart/user/**").hasRole(Role.USER.name())
                         .requestMatchers(HttpMethod.GET,"/users", "/users/**").hasRole(Role.ADMIN.name())
                         .requestMatchers(HttpMethod.GET, "/categories", "/categories/**", "/products", "/products/**").permitAll()
-                        .requestMatchers(HttpMethod.DELETE,"/users/**", "/categories/**").hasRole(Role.ADMIN.name())
-                        .requestMatchers(HttpMethod.PUT, "/categories","/categories/**").permitAll()
+                        .requestMatchers(HttpMethod.DELETE,"/users/**","/products/**" , "/categories/**").hasRole(Role.ADMIN.name())
+                        .requestMatchers(HttpMethod.PUT, "/categories","/categories/**", "/products/**").permitAll()
 
 
                         .requestMatchers(HttpMethod.GET, "/api/keys/user/**").hasRole(Role.USER.name())

@@ -7,6 +7,7 @@ import com.example.beprojectweb.service.ProductService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -25,12 +26,13 @@ public class ProductController {
         return apiResponse;
     }
 
-//        @GetMapping
-//    public APIResponse<List<ProductResponse>> getAllProducts(){
-//        return APIResponse.<List<ProductResponse>>builder()
-//                .result(productService.getProducts(4,10))
-//                .build();
-//    }
+    @GetMapping("/all")
+    public APIResponse<List<ProductResponse>> getAllProducts() {
+        return APIResponse.<List<ProductResponse>>builder()
+                .result(productService.getAllProducts())
+                .build();
+    }
+
     @GetMapping
     public APIResponse<List<ProductResponse>> getProducts(
             @RequestParam(required = false) Integer limit,
@@ -57,6 +59,21 @@ public class ProductController {
         return APIResponse.<ProductResponse>builder()
                 .result(productService.getProductById(productId))
                 .build();
+    }
+
+    @PutMapping("/{id}")
+    public APIResponse<ProductResponse> updateProduct(
+            @PathVariable Long id,
+            @RequestBody ProductRequest request) {
+        return APIResponse.<ProductResponse>builder()
+                .result(productService.updateProduct(id, request))
+                .build();
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<APIResponse> deleteProduct(@PathVariable Long id) {
+        productService.deleteProduct(id);
+        return ResponseEntity.ok(new APIResponse(200, "Deleted successfully", null));
     }
 
 }
