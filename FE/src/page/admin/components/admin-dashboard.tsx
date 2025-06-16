@@ -5,16 +5,31 @@ import { GameManagement } from "./game-management"
 import { OrderManagement } from "./order-management"
 import { AdminSidebar } from "./admin-sidebar"
 import { cn } from "@/lib/utils"
-import { Bell, ChevronDown, Grid, Search } from "lucide-react"
-import { Input } from "@/components/ui/input"
+import { Bell, ChevronDown, Grid } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { useNavigate } from "react-router-dom"
+import { useQueryClient } from "@tanstack/react-query"
+import { useDispatch } from "react-redux"
+import { logout } from "@/redux/authSlice"
 
 export type AdminSection = "overview" | "users" | "games" | "orders" | "analytics" | "settings"
 
 export function AdminDashboard() {
   const [activeSection, setActiveSection] = useState<AdminSection>("overview")
+  const navigate = useNavigate()
+  const queryClient = useQueryClient()
+  const dispatch = useDispatch()
+  
+  const handleLogout = () => {
+    dispatch(logout());
+    localStorage.removeItem("token"); // Xóa token khỏi localStorage
+
+    queryClient.removeQueries({ queryKey: ["me"] });
+
+    navigate("/login");
+  };
 
   const renderContent = () => {
     switch (activeSection) {
@@ -84,7 +99,7 @@ export function AdminDashboard() {
               <DropdownMenuContent align="end" className="w-56">
                 <DropdownMenuItem>Hồ sơ</DropdownMenuItem>
                 <DropdownMenuItem>Cài đặt tài khoản</DropdownMenuItem>
-                <DropdownMenuItem>Đăng xuất</DropdownMenuItem>
+                <DropdownMenuItem onClick={handleLogout}>Đăng xuất</DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
           </div>

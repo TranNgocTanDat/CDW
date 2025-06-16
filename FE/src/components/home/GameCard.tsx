@@ -128,7 +128,6 @@ export function GameCard(product: ProductResponse) {
                   New
                 </Badge>
             )}
-          >
             <Link to="/cart">
               <Button
                 className="w-40 bg-primary hover:bg-primary/90"
@@ -145,7 +144,6 @@ export function GameCard(product: ProductResponse) {
               Download
             </Button>
           </div>
-        </div>
 
             <div
                 className={cn(
@@ -161,7 +159,6 @@ export function GameCard(product: ProductResponse) {
                 Download
               </Button>
             </div>
-          </div>
           <CardContent className="p-4">
             <Link to={`/products/${product.productId}`} className="block">
               <h3 className="font-semibold text-lg line-clamp-1 hover:text-primary transition-colors">

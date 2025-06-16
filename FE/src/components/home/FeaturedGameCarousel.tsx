@@ -58,8 +58,8 @@ export function FeaturedGameCarousel({
       <Card className="overflow-hidden border-0 rounded-xl py-0">
         <div className="relative aspect-[21/9] md:aspect-[21/9]">
           <img
-            src={currentGame.imageUrl || "/placeholder.svg"}
-            alt={currentGame.title}
+            src={currentGame.img || "/placeholder.svg"}
+            alt={currentGame.productName}
             // fill
             className="object-cover transition-transform duration-500 ease-in-out w-full h-[548px] "
           />
@@ -67,7 +67,7 @@ export function FeaturedGameCarousel({
 
           <CardContent className="absolute inset-0 flex items-center p-6 md:p-10">
             <div className="max-w-lg space-y-4">
-              {currentGame.badge && (
+              {/* {currentGame.badge && (
                 <Badge
                   className={
                     currentGame.discount > 0 ? "bg-red-500 hover:bg-red-600" : "bg-primary hover:bg-primary/90"
