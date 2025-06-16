@@ -10,7 +10,9 @@ import com.example.beprojectweb.repository.CartRepository;
 import com.example.beprojectweb.repository.KeyRepository;
 import com.example.beprojectweb.repository.OrderRepository;
 import com.example.beprojectweb.repository.UserRepository;
+import com.example.beprojectweb.service.EmailService;
 import com.example.beprojectweb.service.cart.CartService;
+import jakarta.mail.MessagingException;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -164,6 +166,4 @@ public class OrderService implements IOrderService {
                 .map(orderMapper::toOrderResponse)
                 .toList();
     }
-
-
 }

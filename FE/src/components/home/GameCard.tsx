@@ -92,6 +92,7 @@ export function GameCard(product: ProductResponse) {
     }
   };
 
+
   return (
       <>
         <Card
