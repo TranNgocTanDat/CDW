@@ -21,7 +21,7 @@ export function AdminDashboard() {
   const navigate = useNavigate()
   const queryClient = useQueryClient()
   const dispatch = useDispatch()
-  
+
   const handleLogout = () => {
     dispatch(logout());
     localStorage.removeItem("token"); // Xóa token khỏi localStorage
@@ -99,7 +99,7 @@ export function AdminDashboard() {
               <DropdownMenuContent align="end" className="w-56">
                 <DropdownMenuItem>Hồ sơ</DropdownMenuItem>
                 <DropdownMenuItem>Cài đặt tài khoản</DropdownMenuItem>
-                <DropdownMenuItem onClick={handleLogout}>Đăng xuất</DropdownMenuItem>
+                <DropdownMenuItem>Đăng xuất</DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
           </div>

@@ -17,15 +17,17 @@ export interface ProductRequest {
   stock: number;
   img: string;
   cate_ID: number;  // giữ nguyên nếu backend yêu cầu
-}
+} 
+
+
 
 export interface ProductResponse {
   productId: number;
-  categoryName: string;
   productName: string;
   description: string;
   price: number;
   stock: number;
   img: string;
+  categoryName: string;
   cate_ID?: number;
 }
