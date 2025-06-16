@@ -11,7 +11,6 @@ import { useDispatch, useSelector } from "react-redux";
 import type { RootState } from "@/redux/store";
 import cartApi from "@/services/cartApi";
 import { addCartItem } from "@/redux/cartSlice";
-import keyApi from "@/services/keyApi";
 
 export function GameCard(product: ProductResponse) {
   const [isHovered, setIsHovered] = useState(false);
@@ -49,84 +48,64 @@ export function GameCard(product: ProductResponse) {
     setShowKeyModal(true);
   };
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setKeyInput(e.target.value);
-    console.log("Input changed:", e.target.value);
-  };
-
-  const handleKeySubmit = async () => {
-    console.log("Submitted key:", keyInput);
-
-    if (!keyInput.trim()) {
+  const handleKeySubmit = () => {
+    if (!keyInput) {
       alert("Please enter a key");
       return;
     }
-    const isValid = await keyApi.checkGameKey(keyInput.trim());
-    try {
-
-      console.log("API check key result:", isValid);
-
-      if (isValid) {
-        // Nội dung file text đơn giản (không phải file Word chuẩn .docx)
-        const content = `🎮 Thank you for activating ${product.productName}!\n\nYour key: ${keyInput.trim()}`;
-        const blob = new Blob([content], { type: "text/plain" });
-
-        // Tạo link download
-        const link = document.createElement("a");
-        link.href = URL.createObjectURL(blob);
-        link.download = `${product.productName}.txt`; // Đổi thành .txt cho phù hợp
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-
-        alert("Download started!");
-      } else {
-        alert("Invalid key. Please try again.");
-      }
-    } catch (error) {
-      console.error("Key check failed", error);
-      alert("Something went wrong. Please try again.");
-    } finally {
-      setShowKeyModal(false);
-      setKeyInput("");
-    }
+    alert(`Key submitted: ${keyInput}`);
+    setShowKeyModal(false);
+    setKeyInput("");
   };
 
 
   return (
-      <>
-        <Card
-            className="overflow-hidden transition-all duration-300 group p-0"
-            onMouseEnter={() => setIsHovered(true)}
-            onMouseLeave={() => setIsHovered(false)}
-        >
-          <div className="relative aspect-[2/3] overflow-hidden rounded-none">
-            <img
-                src={product.img || "/placeholder.svg"}
-                alt={product.productName}
+    <>
+      <Card
+        className="group relative overflow-hidden rounded-2xl border shadow-xl transition-all duration-300 py-0"
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
+      >
+        <div className="relative aspect-[2/3] overflow-hidden">
+          <img
+            src={product.img || "/placeholder.svg"}
+            alt={product.productName}
+            className={cn(
+              "h-full w-full object-cover transition-transform duration-500 ease-in-out",
+              isHovered && "scale-105"
+            )}
+          />
+
+          {/* Favorite & Badge */}
+          <div className="absolute top-3 right-3 z-10 flex gap-2">
+            <Button
+              variant="ghost"
+              size="icon"
+              className="rounded-full bg-white/80 backdrop-blur-sm hover:bg-white"
+              onClick={(e) => {
+                e.preventDefault();
+                setIsFavorite(!isFavorite);
+              }}
+            >
+              <Heart
                 className={cn(
-                    "object-cover w-full h-full transition-transform duration-500",
-                    isHovered && "scale-110"
+                  "h-5 w-5",
+                  isFavorite && "fill-red-500 text-red-500"
                 )}
-            />
-            <div className="absolute top-2 right-2 z-10">
-              <Button
-                  variant="ghost"
-                  size="icon"
-                  className="rounded-full bg-background/80 backdrop-blur-sm hover:bg-background/90"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    setIsFavorite(!isFavorite);
-                  }}
-              >
-                <Heart className={cn("h-5 w-5", isFavorite && "fill-red-500 text-red-500")} />
-                <span className="sr-only">Add to favorites</span>
-              </Button>
-            </div>
-            {product.stock && (
-                <Badge className="absolute top-2 left-2 bg-green-500 hover:bg-green-600">
-                  New
-                </Badge>
+              />
+            </Button>
+          </div>
+          {product.stock && (
+            <Badge className="absolute top-3 left-3 bg-green-600 text-white shadow">
+              New
+            </Badge>
+          )}
+
+          {/* Hover Overlay Actions */}
+          <div
+            className={cn(
+              "absolute inset-0 flex flex-col items-center justify-center gap-3 bg-black/60 text-white opacity-0 transition-opacity duration-300",
+              isHovered && "opacity-100"
             )}
           >
             <Link to="/cart">
@@ -147,78 +126,98 @@ export function GameCard(product: ProductResponse) {
           </div>
         </div>
 
-            <div
-                className={cn(
-                    "absolute inset-0 bg-black/60 flex flex-col items-center justify-center gap-2 opacity-0 transition-opacity duration-300",
-                    isHovered && "opacity-100"
-                )}
-            >
-              <Button className="bg-primary hover:bg-primary/90" onClick={handleAddToCart}>
-                <ShoppingCart className="mr-2 h-4 w-4" />
-                Add to Cart
-              </Button>
-              <Button className="bg-primary hover:bg-primary/90" onClick={handleDownloadClick}>
-                Download
-              </Button>
-            </div>
-          </div>
-          <CardContent className="p-4">
-            <Link to={`/products/${product.productId}`} className="block">
-              <h3 className="font-semibold text-lg line-clamp-1 hover:text-primary transition-colors">
+        <CardContent className="p-4 space-y-2">
+          <div className="flex items-start justify-between">
+            <Link to={`/products/${product.productId}`}>
+              <h3 className="text-xl font-bold text-blue-600 line-clamp-1">
                 {product.productName}
               </h3>
             </Link>
-            <div className="flex items-center mt-1">
-              <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-              <span className="text-sm ml-1">{product.stock}</span>
+            <div className="flex items-center gap-1 text-yellow-500">
+              <Star className="h-4 w-4 fill-yellow-400" />
+              <span className="text-sm font-semibold">5.0</span>
             </div>
-          </CardContent>
-          <CardFooter className="p-4 pt-0 flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <span className="font-bold">${product.price.toFixed(2)}</span>
-              {product.price && (
-                  <span className="text-sm text-muted-foreground line-through">
-                ${product.price.toFixed(2)}
-              </span>
-              )}
-            </div>
-          </CardFooter>
-        </Card>
+          </div>
 
-        {showKeyModal && (
-            <div
-                className="fixed inset-0 bg-grey bg-opacity-10 backdrop-blur-md flex items-center justify-center z-50"
-                onClick={() => setShowKeyModal(false)}
-            >
-              <div
-                  className="bg-white p-6 rounded-lg max-w-sm w-full shadow-lg"
-                  onClick={(e) => e.stopPropagation()}
-              >
-                <h2 className="text-xl font-semibold mb-4">Enter your key</h2>
-                <input
-                    type="text"
-                    value={keyInput}
-                    onChange={handleInputChange}
-                    className="w-full border border-gray-300 rounded px-3 py-2 mb-4"
-                    placeholder="Enter your key here"
-                />
-                <div className="flex justify-end gap-2">
-                  <button
-                      className="px-4 py-2 border rounded"
-                      onClick={() => setShowKeyModal(false)}
-                  >
-                    Cancel
-                  </button>
-                  <button
-                      className="px-4 py-2 bg-blue-600 text-white rounded"
-                      onClick={handleKeySubmit}
-                  >
-                    Submit
-                  </button>
-                </div>
-              </div>
+          {product.categoryName && (
+            <div className="flex gap-2 flex-wrap">
+              {product.categoryName.split(",").map((cat) => (
+                <span
+                  key={cat}
+                  className="bg-gray-800 text-xs text-white px-2 py-1 rounded-full"
+                >
+                  {cat.trim()}
+                </span>
+              ))}
             </div>
-        )}
-      </>
+          )}
+
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              {product.price === 0 ? (
+                <span className="text-green-400 text-base font-bold">
+                  Free to Play
+                </span>
+              ) : (
+                <div className="flex items-center gap-2">
+                  <span className="text-lg font-bold">
+                    ${product.price.toFixed(2)}
+                  </span>
+                </div>
+              )}
+              <span className="line-through text-sm text-gray-400">500000</span>
+            </div>
+            <span
+              className={cn(
+                "text-xs font-semibold px-2 py-1 rounded-full",
+                product.stock > 0
+                  ? "bg-green-700 text-white"
+                  : "bg-gray-600 text-gray-300"
+              )}
+            >
+              {product.stock > 0 ? "Available" : "Coming Soon"}
+            </span>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Key Modal */}
+      {showKeyModal && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm"
+          onClick={() => setShowKeyModal(false)}
+        >
+          <div
+            className="w-full max-w-md rounded-xl bg-white p-6 shadow-2xl"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <h2 className="mb-4 text-xl font-bold text-gray-800">
+              Enter Your Key
+            </h2>
+            <input
+              type="text"
+              value={keyInput}
+              onChange={(e) => setKeyInput(e.target.value)}
+              className="mb-4 w-full rounded-lg border border-gray-300 px-4 py-2 outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+              placeholder="Enter your key here"
+            />
+            <div className="flex justify-end gap-2">
+              <button
+                className="rounded-md border px-4 py-2 text-gray-600 hover:bg-gray-100"
+                onClick={() => setShowKeyModal(false)}
+              >
+                Cancel
+              </button>
+              <button
+                className="rounded-md bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
+                onClick={handleKeySubmit}
+              >
+                Submit
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </>
   );
 }
