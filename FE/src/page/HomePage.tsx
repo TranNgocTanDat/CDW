@@ -16,8 +16,8 @@ const HomePage = () => {
   });
 
   const { data: games } = useQuery({
-    queryKey: ["games", { limit: 2, offset: 0 }],
-    queryFn: () => productApi.getProducts(4, 0),
+    queryKey: ["games", { limit: 2, offset: 1 }],
+    queryFn: () => productApi.getProducts(4, 1),
     refetchOnWindowFocus: false,
   });
   const { data: gamesSpecial } = useQuery({
@@ -31,47 +31,54 @@ const HomePage = () => {
     },
     refetchOnWindowFocus: false,
   });
+
+  const { data: gamesSlide } = useQuery({
+    queryKey: ["gamesSlide", { limit: 1, offset: 0 }],
+    queryFn: () => productApi.getProducts(1, 0),
+    refetchOnWindowFocus: false,
+  });
   return (
     <main className="flex-1">
       <section className="relative">
         <div className="absolute inset-0 bg-gradient-to-r from-black/70 to-black/30 z-10" />
-        <div
-          className="h-[500px] bg-cover bg-center bg-no-repeat"
-          style={{
-            backgroundImage:
-              "url('https://images3.alphacoders.com/136/1369675.jpeg')",
-          }}
-        >
-          <div className="container relative z-20 flex h-full flex-col justify-center ">
-            <div className="max-w-[600px] space-y-4">
-              <h1 className="text-4xl font-bold tracking-tight text-white sm:text-5xl md:text-6xl">
-                Discover Your Next Gaming Adventure
-              </h1>
-              <p className="text-lg text-white/90">
-                Explore thousands of games with exclusive deals and instant
-                downloads.
-              </p>
-              <div className="flex flex-col sm:flex-row gap-4 pt-4">
-                <Button size="lg" className="bg-primary hover:bg-primary/90">
-                  Shop Now
-                </Button>
-                <Button
-                  size="lg"
-                  variant="outline"
-                  className="text-white border-white hover:bg-white/10"
-                >
-                  View Deals
-                </Button>
+        {gamesSlide?.map((game) => (
+          <div
+            className="h-[500px] bg-cover bg-center bg-no-repeat"
+            style={{
+              backgroundImage: `url('${game.img}')`,
+              // "url('https://images3.alphacoders.com/136/1369675.jpeg')",
+            }}
+          >
+            <div className="container relative z-20 flex h-full flex-col justify-center ">
+              <div className="max-w-[600px] space-y-4">
+                <h1 className="text-4xl font-bold tracking-tight text-white sm:text-5xl md:text-6xl">
+                  {game.productName}
+                </h1>
+                <p className="text-lg text-white/90">{game.description}</p>
+                <div className="flex flex-col sm:flex-row gap-4 pt-4">
+                  <Button size="lg" className="bg-primary hover:bg-primary/90">
+                    Mua ngay
+                  </Button>
+                  <Link to={`/products/${game.productId}`}>
+                    <Button
+                      size="lg"
+                      variant="outline"
+                      className="text-whitebg-white/10"
+                    >
+                      Xem chi tiết
+                    </Button>
+                  </Link>
+                </div>
               </div>
             </div>
           </div>
-        </div>
+        ))}
       </section>
       <section className="container py-12">
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-3xl font-bold tracking-tight">Featured Games</h2>
           <Link
-            to="/"
+            to=""
             className="flex items-center text-sm font-medium text-primary"
           >
             View all <ChevronRight className="ml-1 h-4 w-4" />
@@ -144,10 +151,10 @@ const HomePage = () => {
           </Link>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-          {!gamesSpecial ? (
+          {!gamesSlide ? (
             <p>Đang tải danh mục...</p>
           ) : (
-            gamesSpecial.map((game) => (
+            gamesSlide.map((game) => (
               <GameCard
                 productName={game.productName}
                 img={game.img || "/placeholder.svg?height=300&width=200"}

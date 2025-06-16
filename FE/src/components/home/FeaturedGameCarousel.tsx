@@ -1,52 +1,57 @@
-"use client"
+"use client";
 
-import { useState, useEffect, useCallback } from "react"
-import { ChevronLeft, ChevronRight } from "lucide-react"
+import { useState, useEffect, useCallback } from "react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
-import { Button } from "@/components/ui/button"
-import { Card, CardContent } from "../ui/card"
-import { useMobile } from "@/hooks/use-moblie"
-import type {  ProductResponse } from "@/model/Product"
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "../ui/card";
+import { useMobile } from "@/hooks/use-moblie";
+import type { ProductResponse } from "@/model/Product";
+import { Link } from "react-router-dom";
 
 interface FeaturedGameCarouselProps {
-  featuredGames: ProductResponse[]
+  featuredGames: ProductResponse[];
 }
 
-export function FeaturedGameCarousel({ featuredGames }: FeaturedGameCarouselProps) {
-  const [currentIndex, setCurrentIndex] = useState(0)
-  const [isAnimating, setIsAnimating] = useState(false)
-  const isMobile = useMobile()
+export function FeaturedGameCarousel({
+  featuredGames,
+}: FeaturedGameCarouselProps) {
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [isAnimating, setIsAnimating] = useState(false);
+  const isMobile = useMobile();
 
   const goToSlide = useCallback(
     (index: number) => {
-      if (isAnimating) return
+      if (isAnimating) return;
 
-      setIsAnimating(true)
-      setCurrentIndex(index)
+      setIsAnimating(true);
+      setCurrentIndex(index);
 
       setTimeout(() => {
-        setIsAnimating(false)
-      }, 500)
+        setIsAnimating(false);
+      }, 500);
     },
-    [isAnimating],
-  )
+    [isAnimating]
+  );
 
   const goToPrevSlide = useCallback(() => {
-    const newIndex = currentIndex === 0 ? featuredGames.length - 1 : currentIndex - 1
-    goToSlide(newIndex)
-  }, [currentIndex, goToSlide])
+    const newIndex =
+      currentIndex === 0 ? featuredGames.length - 1 : currentIndex - 1;
+    goToSlide(newIndex);
+  }, [currentIndex, goToSlide]);
 
   const goToNextSlide = useCallback(() => {
-    const newIndex = currentIndex === featuredGames.length - 1 ? 0 : currentIndex + 1
-    goToSlide(newIndex)
-  }, [currentIndex, goToSlide])
+    const newIndex =
+      currentIndex === featuredGames.length - 1 ? 0 : currentIndex + 1;
+    goToSlide(newIndex);
+  }, [currentIndex, goToSlide]);
 
   useEffect(() => {
-    const interval = setInterval(goToNextSlide, 5000)
-    return () => clearInterval(interval)
-  }, [goToNextSlide])
+    const interval = setInterval(goToNextSlide, 5000);
+    return () => clearInterval(interval);
+  }, [goToNextSlide]);
 
-  const currentGame = featuredGames[currentIndex]
+  const currentGame = featuredGames[currentIndex];
 
   return (
     <div className="relative">
@@ -71,24 +76,33 @@ export function FeaturedGameCarousel({ featuredGames }: FeaturedGameCarouselProp
                   {currentGame.badge}
                 </Badge>
               )} */}
-              <h3 className="text-2xl md:text-4xl font-bold text-white">{currentGame.productName}</h3>
-              <p className="text-white/80 hidden md:block">{currentGame.description}</p>
+              <h3 className="text-2xl md:text-4xl font-bold text-white">
+                {currentGame.productName}
+              </h3>
+              <p className="text-white/80 hidden md:block">
+                {currentGame.description}
+              </p>
 
               <div className="flex items-center gap-2">
-                <span className="text-xl font-bold text-white">${currentGame.price.toFixed(2)}</span>
+                <span className="text-xl font-bold text-white">
+                  ${currentGame.price.toFixed(2)}
+                </span>
                 {currentGame.price && (
-                  <span className="text-sm text-white/70 line-through">${currentGame.price.toFixed(2)}</span>
+                  <span className="text-sm text-white/70 line-through">
+                    ${currentGame.price.toFixed(2)}
+                  </span>
                 )}
               </div>
 
               <div className="flex flex-col sm:flex-row gap-3 pt-2">
                 <Button className="bg-primary hover:bg-primary/90">
-                    Buy Now
-               
+                  Buy Now
                 </Button>
-                <Button variant="outline" className="text-white border-white hover:bg-white/10">
-                  View Details
-                </Button>
+                <Link to={`/products/${currentGame.productId}`}>
+                  <Button variant="outline" className="text-whitebg-white/10">
+                    View Details
+                  </Button>
+                </Link>
               </div>
             </div>
           </CardContent>
@@ -101,7 +115,9 @@ export function FeaturedGameCarousel({ featuredGames }: FeaturedGameCarouselProp
             key={index}
             onClick={() => goToSlide(index)}
             className={`w-2 h-2 rounded-full transition-all ${
-              index === currentIndex ? "bg-primary w-4" : "bg-white/50 hover:bg-white/80"
+              index === currentIndex
+                ? "bg-primary w-4"
+                : "bg-white/50 hover:bg-white/80"
             }`}
             aria-label={`Go to slide ${index + 1}`}
           />
@@ -131,5 +147,5 @@ export function FeaturedGameCarousel({ featuredGames }: FeaturedGameCarouselProp
         </>
       )}
     </div>
-  )
+  );
 }

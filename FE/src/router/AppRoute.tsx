@@ -13,6 +13,7 @@ import AdminPage from "@/page/admin/PageAdmin";
 import VerifyPage from "@/page/register/Verify";
 import UploadAvatarForm from "@/components/layout/Header/Profile";
 import SearchResultPage from "@/page/products/components/SearchPage";
+import OrdersUser from "@/page/order/OrdersUser";
 
 const route = createBrowserRouter([
   {
@@ -31,6 +32,7 @@ const route = createBrowserRouter([
       { path: "/create-order", element: <OrderPage /> },
       { path: "/profile", element: <UploadAvatarForm /> },
        { path: "/search", element: <SearchResultPage /> },
+       {path: "/orders/me", element: <OrdersUser />}, // Thêm route cho trang đơn hàng của người dùng
     ],
   },
   {

@@ -22,6 +22,7 @@ public class OrderResponse {
      String paymentMethod;
      LocalDateTime createdAt;
      LocalDateTime paymentAt;
-
+     String email;
+     String username;
      List<OrderItemResponse> orderItems;
 }

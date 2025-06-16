@@ -37,9 +37,7 @@ import { AddEditProductModal } from "./EditProductModal";
 export function GameManagement() {
   const [searchTerm, setSearchTerm] = useState("");
   const [open, setOpen] = useState(false);
-  const [productEditing, setProductEditing] = useState<ProductResponse | null>(
-    null
-  );
+  const [productEditing, setProductEditing] = useState<ProductResponse | null>(null);
   const queryClient = useQueryClient();
 
   const { data: products } = useQuery<ProductResponse[]>({
@@ -75,13 +73,11 @@ export function GameManagement() {
       } else {
         await createProductMutation.mutateAsync(data);
       }
-  
-      // chỉ đóng modal nếu không lỗi
+
       setOpen(false);
       setProductEditing(null);
     } catch (error) {
-      console.error("Save failed", error);
-      // Optionally: show error toast or alert here
+      console.error("Lưu thất bại", error);
     }
   };
 
@@ -89,14 +85,14 @@ export function GameManagement() {
     <div className="space-y-6 mx-3">
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-3xl font-bold">Game Management</h1>
+          <h1 className="text-3xl font-bold">Quản lý trò chơi</h1>
           <p className="text-muted-foreground">
-            Manage your game catalog and inventory
+            Quản lý danh mục và kho trò chơi của bạn
           </p>
         </div>
         <Button onClick={() => setOpen(true)}>
           <Plus className="mr-2 h-4 w-4" />
-          Add Game
+          Thêm trò chơi
         </Button>
       </div>
 
@@ -112,15 +108,15 @@ export function GameManagement() {
 
       <Card>
         <CardHeader>
-          <CardTitle>Game Catalog</CardTitle>
-          <CardDescription>Manage all games in your store</CardDescription>
+          <CardTitle>Danh mục trò chơi</CardTitle>
+          <CardDescription>Quản lý tất cả trò chơi trong cửa hàng</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="flex items-center space-x-2 mb-4">
             <div className="relative flex-1">
               <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
               <Input
-                placeholder="Search games..."
+                placeholder="Tìm kiếm trò chơi..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="pl-8"
@@ -128,17 +124,17 @@ export function GameManagement() {
             </div>
             <Button variant="outline" size="sm">
               <Filter className="mr-2 h-4 w-4" />
-              Filter
+              Lọc
             </Button>
           </div>
 
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Game</TableHead>
-                <TableHead>Price</TableHead>
-                <TableHead>Categories</TableHead>
-                <TableHead>Rating</TableHead>
+                <TableHead>Tên trò chơi</TableHead>
+                <TableHead>Giá</TableHead>
+                <TableHead>Danh mục</TableHead>
+                <TableHead>Đánh giá</TableHead>
                 <TableHead className="w-[70px]"></TableHead>
               </TableRow>
             </TableHeader>
@@ -191,10 +187,6 @@ export function GameManagement() {
                       <span className="text-sm">{game.stock}</span>
                     </div>
                   </TableCell>
-                  {/* <TableCell className="text-sm">{new Date(game.releaseDate).toLocaleDateString()}</TableCell> */}
-                  {/* <TableCell>
-                    <Badge variant={game.isNew ? "default" : "secondary"}>{game.isNew ? "New" : "Active"}</Badge>
-                  </TableCell> */}
                   <TableCell>
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
@@ -203,32 +195,30 @@ export function GameManagement() {
                         </Button>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end">
-                        <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                        <DropdownMenuItem>View Details</DropdownMenuItem>
+                        <DropdownMenuLabel>Thao tác</DropdownMenuLabel>
+                        <DropdownMenuItem>Xem chi tiết</DropdownMenuItem>
                         <DropdownMenuItem
                           onClick={() => {
-                            setProductEditing(game); // ép kiểu nếu cần
+                            setProductEditing(game);
                             setOpen(true);
                           }}
                         >
-                          Edit Game
+                          Chỉnh sửa
                         </DropdownMenuItem>
-                        <DropdownMenuItem>View Analytics</DropdownMenuItem>
+                        <DropdownMenuItem>Xem phân tích</DropdownMenuItem>
                         <DropdownMenuSeparator />
-                        <DropdownMenuItem>Duplicate</DropdownMenuItem>
+                        <DropdownMenuItem>Nhân bản</DropdownMenuItem>
                         <DropdownMenuItem
                           className="text-red-600"
                           onClick={() => {
                             if (
-                              confirm(
-                                "Are you sure you want to delete this game?"
-                              )
+                              confirm("Bạn có chắc chắn muốn xóa trò chơi này?")
                             ) {
                               deleteProductMutation.mutate(game.productId);
                             }
                           }}
                         >
-                          Delete Game
+                          Xóa
                         </DropdownMenuItem>
                       </DropdownMenuContent>
                     </DropdownMenu>

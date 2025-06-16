@@ -19,12 +19,11 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import {
-
   DropdownMenu,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Search , UserPlus, Filter } from "lucide-react";
+import { Search, UserPlus, Filter } from "lucide-react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import type { UserCreationRequest, UserResponse } from "@/model/User";
 import userApi from "@/services/userApi";
@@ -45,10 +44,8 @@ export function UserManagement() {
   const addUserMutation = useMutation({
     mutationFn: userApi.addUser,
     onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: ["users"],
-      });
-      console.log("User added successfully");
+      queryClient.invalidateQueries({ queryKey: ["users"] });
+      console.log("Thêm người dùng thành công");
     },
   });
 
@@ -73,25 +70,21 @@ export function UserManagement() {
     userApi
       .deleteUser(user.id)
       .then(() => {
-        queryClient.invalidateQueries({
-          queryKey: ["users"],
-        });
-        console.log("User deleted successfully");
+        queryClient.invalidateQueries({ queryKey: ["users"] });
+        console.log("Xoá người dùng thành công");
       })
       .catch((error) => {
-        console.error("Error deleting user:", error);
+        console.error("Lỗi xoá người dùng:", error);
       });
   };
-
-  
 
   return (
     <div className="space-y-6 mx-3">
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-3xl font-bold">User Management</h1>
+          <h1 className="text-3xl font-bold">Quản lý người dùng</h1>
           <p className="text-muted-foreground">
-            Manage user accounts and permissions
+            Quản lý tài khoản người dùng và phân quyền
           </p>
         </div>
         <Button onClick={() => setOpen(true)}>
@@ -99,6 +92,7 @@ export function UserManagement() {
           Thêm người dùng
         </Button>
       </div>
+
       <AddUserModal
         open={open}
         onClose={() => {
@@ -111,15 +105,17 @@ export function UserManagement() {
 
       <Card>
         <CardHeader>
-          <CardTitle>User Overview</CardTitle>
-          <CardDescription>Search and manage all user accounts</CardDescription>
+          <CardTitle>Danh sách người dùng</CardTitle>
+          <CardDescription>
+            Tìm kiếm và quản lý tất cả tài khoản người dùng
+          </CardDescription>
         </CardHeader>
         <CardContent>
           <div className="flex items-center space-x-2 mb-4">
             <div className="relative flex-1">
               <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
               <Input
-                placeholder="Search users..."
+                placeholder="Tìm kiếm người dùng..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="pl-8"
@@ -127,17 +123,17 @@ export function UserManagement() {
             </div>
             <Button variant="outline" size="sm">
               <Filter className="mr-2 h-4 w-4" />
-              Filter
+              Bộ lọc
             </Button>
           </div>
 
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>User</TableHead>
-                <TableHead>FirstName</TableHead>
-                <TableHead>LastName</TableHead>
-                <TableHead>Orders</TableHead>
+                <TableHead>Người dùng</TableHead>
+                <TableHead>Họ</TableHead>
+                <TableHead>Tên</TableHead>
+                <TableHead>Đơn hàng</TableHead>
                 <TableHead className="w-[70px]"></TableHead>
               </TableRow>
             </TableHeader>
@@ -166,31 +162,18 @@ export function UserManagement() {
                       </div>
                     </div>
                   </TableCell>
-                  {/* <TableCell>
-                    <Badge variant={user.role === "admin" ? "default" : "secondary"}>{user.role}</Badge>
-                  </TableCell> */}
-                  {/* <TableCell>
-                    <Badge
-                      variant={
-                        user.status === "active" ? "default" : user.status === "suspended" ? "destructive" : "secondary"
-                      }
-                    >
-                      {user.status}
-                    </Badge>
-                  </TableCell> */}
                   <TableCell className="text-sm">{user.firstName}</TableCell>
                   <TableCell className="text-sm">{user.lastName}</TableCell>
-                  <TableCell className="text-sm font-medium">
-                    </TableCell>
+                  <TableCell className="text-sm font-medium"></TableCell>
                   <TableCell>
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
                         <Button
                           size="sm"
                           variant="destructive"
-                          onClick={() => (handleDeleteUser(user))}
+                          onClick={() => handleDeleteUser(user)}
                         >
-                          Xóa
+                          Xoá
                         </Button>
                       </DropdownMenuTrigger>
                     </DropdownMenu>

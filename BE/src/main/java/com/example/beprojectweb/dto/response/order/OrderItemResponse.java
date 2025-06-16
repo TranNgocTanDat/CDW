@@ -16,4 +16,5 @@ public class OrderItemResponse {
     Long productId;
     String productName;
     BigDecimal price;
+    String img;
 }
