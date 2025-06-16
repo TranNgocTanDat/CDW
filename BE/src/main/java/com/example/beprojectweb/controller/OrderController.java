@@ -40,9 +40,17 @@ public class OrderController {
     }
 
     @GetMapping
-    public APIResponse<List<OrderResponse>> getMyOrders() {
+    public APIResponse<List<OrderResponse>> getOrders() {
         return APIResponse.<List<OrderResponse>>builder()
                 .result(orderService.getAllOrder())
                 .build();
     }
+
+    @GetMapping("/me")
+    public APIResponse<List<OrderResponse>> getMyOrders(){
+        return APIResponse.<List<OrderResponse>>builder()
+                .result(orderService.getOrdersByCurrentUser())
+                .build();
+    }
+
 }

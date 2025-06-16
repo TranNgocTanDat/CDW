@@ -14,12 +14,12 @@ interface AdminSidebarProps {
 const sidebarItems = [
   {
     id: "overview" as AdminSection,
-    label: "Overview",
+    label: "Tổng quan",
     icon: LayoutDashboard,
   },
   {
     id: "users" as AdminSection,
-    label: "Users",
+    label: "Người dùng",
     icon: Users,
   },
   {
@@ -29,26 +29,26 @@ const sidebarItems = [
   },
   {
     id: "orders" as AdminSection,
-    label: "Orders",
+    label: "Đơn hàng",
     icon: ShoppingBag,
   },
-  {
-    id: "analytics" as AdminSection,
-    label: "Analytics",
-    icon: BarChart3,
-  },
-  {
-    id: "settings" as AdminSection,
-    label: "Settings",
-    icon: Settings,
-  },
+  // {
+  //   id: "analytics" as AdminSection,
+  //   label: "Analytics",
+  //   icon: BarChart3,
+  // },
+  // {
+  //   id: "settings" as AdminSection,
+  //   label: "Settings",
+  //   icon: Settings,
+  // },
 ]
 
 export function AdminSidebar({ activeSection, onSectionChange }: AdminSidebarProps) {
   return (
     <div className="w-64 border-r bg-muted/10">
       <div className="p-6">
-        <h2 className="text-lg font-semibold">Admin Panel</h2>
+        <h2 className="text-lg font-semibold">ADMIN</h2>
       </div>
       <ScrollArea className="flex-1 px-4 py-2">
         <div className="space-y-2">

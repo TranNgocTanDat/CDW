@@ -1,86 +1,34 @@
-"use client"
+"use client";
 
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
-import { Users, Gamepad2, ShoppingBag, DollarSign, TrendingUp, TrendingDown, Clock, Star } from "lucide-react"
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import {
+  Users,
+  Gamepad2,
+  ShoppingBag,
+  DollarSign,
+  TrendingUp,
+  TrendingDown,
+  Clock,
+  Star,
+} from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
+import type { OrderResponse } from "@/model/Order";
+import orderApi from "@/services/orderApi";
+import type { ProductResponse } from "@/model/Product";
+import productApi from "@/services/productApi";
+import { games } from "../game";
+import type { UserResponse } from "@/model/User";
+import userApi from "@/services/userApi";
 
-// Cập nhật thống kê tổng quan
-const stats = [
-  {
-    title: "Total Revenue",
-    value: "$67,845",
-    change: "+23.1%",
-    trend: "up",
-    icon: DollarSign,
-  },
-  {
-    title: "Total Users",
-    value: "3,247",
-    change: "+18.3%",
-    trend: "up",
-    icon: Users,
-  },
-  {
-    title: "Total Games",
-    value: "127",
-    change: "+8.2%",
-    trend: "up",
-    icon: Gamepad2,
-  },
-  {
-    title: "Total Orders",
-    value: "1,567",
-    change: "+12.5%",
-    trend: "up",
-    icon: ShoppingBag,
-  },
-]
-
-// Cập nhật danh sách đơn hàng gần đây trong dashboard overview
-const recentOrders = [
-  {
-    id: "ORD-025",
-    customer: "Brandon Clark",
-    game: "Eternal Quest IX",
-    amount: "$59.97",
-    status: "refunded",
-    date: "1 hour ago",
-  },
-  {
-    id: "ORD-024",
-    customer: "Lauren Miller",
-    game: "Dragon's Keep",
-    amount: "$39.99",
-    status: "completed",
-    date: "2 hours ago",
-  },
-  {
-    id: "ORD-023",
-    customer: "Ryan Johnson",
-    game: "Shadow Realm + Astral Frontiers",
-    amount: "$109.98",
-    status: "processing",
-    date: "3 hours ago",
-  },
-  {
-    id: "ORD-022",
-    customer: "Stephanie White",
-    game: "Cyber Nexus 2077",
-    amount: "$29.99",
-    status: "completed",
-    date: "4 hours ago",
-  },
-  {
-    id: "ORD-021",
-    customer: "Matthew Anderson",
-    game: "Medieval Legends + Tactical Force",
-    amount: "$44.97",
-    status: "pending",
-    date: "5 hours ago",
-  },
-]
-
+// Top game bán chạy
 const topGames = [
   {
     name: "Cyber Nexus 2077",
@@ -106,66 +54,143 @@ const topGames = [
     revenue: "$2,678",
     rating: 4.8,
   },
-]
+];
 
 export function DashboardOverview() {
+  const { data: orders } = useQuery<OrderResponse[]>({
+    queryKey: ["orders"],
+    queryFn: () => orderApi.getAllOrders(),
+    // refetchInterval: 500
+  });
+
+  const count = orders?.length;
+
+  const countPrice = orders?.reduce(
+    (total, order) => total + order.totalPrice,
+    0
+  );
+
+  const countGames = games?.length;
+
+  const { data: products } = useQuery<ProductResponse[]>({
+    queryKey: ["products"],
+    queryFn: productApi.getAllProducts,
+    refetchOnWindowFocus: false,
+  });
+  const { data: users } = useQuery<UserResponse[]>({
+    queryKey: ["users"],
+    queryFn: userApi.getUsers,
+    refetchOnWindowFocus: false,
+  });
+
+  const countUsers = users?.length || 0;
+
   return (
-    <div className="space-y-6 mx-3" >
+    <div className="space-y-6 mx-3">
       <div>
-        <h1 className="text-3xl font-bold">Dashboard Overview</h1>
-        <p className="text-muted-foreground">Welcome back! Here's a summary of your game store performance.</p>
+        <h1 className="text-3xl font-bold">Tổng quan bảng điều khiển</h1>
+        <p className="text-muted-foreground">
+          Chào mừng trở lại! Đây là tóm tắt hiệu suất cửa hàng game của bạn.
+        </p>
       </div>
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        {stats.map((stat) => (
-          <Card key={stat.title}>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">{stat.title}</CardTitle>
-              <stat.icon className="h-4 w-4 text-muted-foreground" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">{stat.value}</div>
-              <div className="flex items-center space-x-2 text-xs text-muted-foreground">
-                {stat.trend === "up" ? (
-                  <TrendingUp className="h-4 w-4 text-green-500" />
-                ) : (
-                  <TrendingDown className="h-4 w-4 text-red-500" />
-                )}
-                <span className={stat.trend === "up" ? "text-green-500" : "text-red-500"}>{stat.change}</span>
-                <span>from last month</span>
-              </div>
-            </CardContent>
-          </Card>
-        ))}
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">
+              Tổng doanh thu
+            </CardTitle>
+            <DollarSign className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{countPrice}</div>
+            <div className="flex items-center space-x-2 text-xs text-muted-foreground">
+              <span className="text-green-500">+23.1%</span>
+              <span>so với tháng trước</span>
+            </div>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">
+              Tổng người dùng
+            </CardTitle>
+            <Users className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{countUsers}</div>
+            <div className="flex items-center space-x-2 text-xs text-muted-foreground">
+              <span className="text-green-500">+18.3%</span>
+              <span>so với tháng trước</span>
+            </div>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Tổng số game</CardTitle>
+            <Gamepad2 className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{countGames}</div>
+            <div className="flex items-center space-x-2 text-xs text-muted-foreground">
+              <span className="text-green-500">+8.2%</span>
+              <span>so với tháng trước</span>
+            </div>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Tổng đơn hàng</CardTitle>
+            <ShoppingBag className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{count}</div>
+            <div className="flex items-center space-x-2 text-xs text-muted-foreground">
+              <span className="text-green-500">+12.5%</span>
+              <span>so với tháng trước</span>
+            </div>
+          </CardContent>
+        </Card>
       </div>
 
       <div className="grid gap-6 md:grid-cols-2">
         <Card>
           <CardHeader>
-            <CardTitle>Recent Orders</CardTitle>
-            <CardDescription>Latest customer orders and their status</CardDescription>
+            <CardTitle>Đơn hàng gần đây</CardTitle>
+            <CardDescription>
+              Những đơn hàng mới nhất và trạng thái của chúng
+            </CardDescription>
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
-              {recentOrders.map((order) => (
-                <div key={order.id} className="flex items-center justify-between border-b pb-4">
+              {(orders ?? []).slice(0, 8).map((order) => (
+                <div
+                  key={order.id}
+                  className="flex items-center justify-between border-b pb-4"
+                >
                   <div className="space-y-1">
-                    <p className="text-sm font-medium">{order.customer}</p>
-                    <p className="text-xs text-muted-foreground">{order.game}</p>
+                    <p className="text-sm font-medium">{order.username}</p>
+                    {order.orderItems.map((item, index) => (
+                      <p key={index} className="text-xs text-muted-foreground">
+                        {item.productName}
+                      </p>
+                    ))}
                     <div className="flex items-center space-x-2">
                       <Clock className="h-3 w-3 text-muted-foreground" />
-                      <span className="text-xs text-muted-foreground">{order.date}</span>
+                      <span className="text-xs text-muted-foreground">
+                        {order.createdAt}
+                      </span>
                     </div>
                   </div>
                   <div className="text-right">
-                    <p className="text-sm font-medium">{order.amount}</p>
+                    <p className="text-sm font-medium">{order.totalPrice}</p>
                     <Badge
                       variant={
-                        order.status === "completed"
+                        order.status === "Đã hoàn tất"
                           ? "default"
-                          : order.status === "processing"
-                            ? "secondary"
-                            : "destructive"
+                          : order.status === "Đang xử lý"
+                          ? "secondary"
+                          : "destructive"
                       }
                     >
                       {order.status}
@@ -175,44 +200,55 @@ export function DashboardOverview() {
               ))}
             </div>
             <Button variant="outline" className="w-full mt-4">
-              View All Orders
+              Xem tất cả đơn hàng
             </Button>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader>
-            <CardTitle>Top Selling Games</CardTitle>
-            <CardDescription>Best performing games this month</CardDescription>
+            <CardTitle>Game bán chạy nhất</CardTitle>
+            <CardDescription>
+              Những game có hiệu suất tốt nhất trong tháng
+            </CardDescription>
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
-              {topGames.map((game, index) => (
-                <div key={game.name} className="flex items-center justify-between border-b pb-4">
+              {(products ?? []).map((game, index) => (
+                <div
+                  key={game.productName}
+                  className="flex items-center justify-between border-b pb-4"
+                >
                   <div className="space-y-1">
                     <div className="flex items-center space-x-2">
-                      <span className="text-sm font-bold text-muted-foreground">#{index + 1}</span>
-                      <p className="text-sm font-medium">{game.name}</p>
+                      <span className="text-sm font-bold text-muted-foreground">
+                        #{index + 1}
+                      </span>
+                      <p className="text-sm font-medium">{game.productName}</p>
                     </div>
                     <div className="flex items-center space-x-2">
                       <Star className="h-3 w-3 fill-yellow-400 text-yellow-400" />
-                      <span className="text-xs text-muted-foreground">{game.rating}</span>
+                      <span className="text-xs text-muted-foreground">
+                        {game.stock} sao
+                      </span>
                       <span className="text-xs text-muted-foreground">•</span>
-                      <span className="text-xs text-muted-foreground">{game.sales} sales</span>
+                      <span className="text-xs text-muted-foreground">
+                        {game.stock} lượt bán
+                      </span>
                     </div>
                   </div>
                   <div className="text-right">
-                    <p className="text-sm font-medium">{game.revenue}</p>
+                    <p className="text-sm font-medium">{game.price}</p>
                   </div>
                 </div>
               ))}
             </div>
             <Button variant="outline" className="w-full mt-4">
-              View Analytics
+              Xem phân tích
             </Button>
           </CardContent>
         </Card>
       </div>
     </div>
-  )
+  );
 }

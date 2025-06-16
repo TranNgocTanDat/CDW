@@ -11,4 +11,5 @@ public interface IOrderService {
     List<OrderResponse> getAllOrder();
     PaymentMethodResponse choosePaymentMethod(Long orderId, PaymentMethod method);
     OrderResponse confirmPayment(Long orderId);
+    List<OrderResponse> getOrdersByCurrentUser();
 }

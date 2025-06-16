@@ -1,89 +1,57 @@
-"use client"
+"use client";
 
-import { useState, useEffect, useCallback } from "react"
-import { ChevronLeft, ChevronRight } from "lucide-react"
+import { useState, useEffect, useCallback } from "react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
-import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
-import { Card, CardContent } from "../ui/card"
-import { useMobile } from "@/hooks/use-moblie"
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "../ui/card";
+import { useMobile } from "@/hooks/use-moblie";
+import type { ProductResponse } from "@/model/Product";
+import { Link } from "react-router-dom";
 
-const featuredGames = [
-  {
-    id: 1,
-    title: "Stellar Odyssey",
-    description: "Embark on an epic journey through the cosmos in this open-world space adventure.",
-    imageUrl: "https://cn.i.cdn.ti-platform.com/content/336/stellar-odyssey/game/uk/stellaodyssey-1600x900-en.a3f12116.jpg?height=500&width=1000",
-    price: 59.99,
-    discount: 0,
-    badge: "Pre-order",
-  },
-  {
-    id: 2,
-    title: "Mythic Realms",
-    description: "Battle legendary creatures and explore ancient worlds in this fantasy RPG.",
-    imageUrl: "https://www.uploadvr.com/content/images/size/w1024/format/webp/2023/10/Mythic-Realms.png?height=500&width=1000",
-    price: 49.99,
-    originalPrice: 69.99,
-    discount: 28,
-    badge: "Sale",
-  },
-  {
-    id: 3,
-    title: "Velocity Rush",
-    description: "Experience high-octane racing with next-gen graphics and realistic physics.",
-    imageUrl: "https://img.itch.zone/aW1hZ2UvMjA4MjU5LzQzNzQ1MTcucG5n/original/Ka50UD.png?height=500&width=1000",
-    price: 39.99,
-    discount: 0,
-    badge: "New Release",
-  },
-  {
-    id: 4,
-    title: "Tactical Warfare",
-    description: "Lead your squad through intense combat scenarios in this strategic shooter.",
-    imageUrl: "https://wallup.net/wp-content/uploads/2019/10/956382-battlefield-shooter-tactical-military-action-fighting-warrior-futuristic-sci-fi.jpg",
-    price: 29.99,
-    originalPrice: 59.99,
-    discount: 50,
-    badge: "Sale",
-  },
-]
+interface FeaturedGameCarouselProps {
+  featuredGames: ProductResponse[];
+}
 
-export function FeaturedGameCarousel() {
-  const [currentIndex, setCurrentIndex] = useState(0)
-  const [isAnimating, setIsAnimating] = useState(false)
-  const isMobile = useMobile()
+export function FeaturedGameCarousel({
+  featuredGames,
+}: FeaturedGameCarouselProps) {
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [isAnimating, setIsAnimating] = useState(false);
+  const isMobile = useMobile();
 
   const goToSlide = useCallback(
     (index: number) => {
-      if (isAnimating) return
+      if (isAnimating) return;
 
-      setIsAnimating(true)
-      setCurrentIndex(index)
+      setIsAnimating(true);
+      setCurrentIndex(index);
 
       setTimeout(() => {
-        setIsAnimating(false)
-      }, 500)
+        setIsAnimating(false);
+      }, 500);
     },
-    [isAnimating],
-  )
+    [isAnimating]
+  );
 
   const goToPrevSlide = useCallback(() => {
-    const newIndex = currentIndex === 0 ? featuredGames.length - 1 : currentIndex - 1
-    goToSlide(newIndex)
-  }, [currentIndex, goToSlide])
+    const newIndex =
+      currentIndex === 0 ? featuredGames.length - 1 : currentIndex - 1;
+    goToSlide(newIndex);
+  }, [currentIndex, goToSlide]);
 
   const goToNextSlide = useCallback(() => {
-    const newIndex = currentIndex === featuredGames.length - 1 ? 0 : currentIndex + 1
-    goToSlide(newIndex)
-  }, [currentIndex, goToSlide])
+    const newIndex =
+      currentIndex === featuredGames.length - 1 ? 0 : currentIndex + 1;
+    goToSlide(newIndex);
+  }, [currentIndex, goToSlide]);
 
   useEffect(() => {
-    const interval = setInterval(goToNextSlide, 5000)
-    return () => clearInterval(interval)
-  }, [goToNextSlide])
+    const interval = setInterval(goToNextSlide, 5000);
+    return () => clearInterval(interval);
+  }, [goToNextSlide]);
 
-  const currentGame = featuredGames[currentIndex]
+  const currentGame = featuredGames[currentIndex];
 
   return (
     <div className="relative">
@@ -107,28 +75,34 @@ export function FeaturedGameCarousel() {
                 >
                   {currentGame.badge}
                 </Badge>
-              )}
-              <h3 className="text-2xl md:text-4xl font-bold text-white">{currentGame.title}</h3>
-              <p className="text-white/80 hidden md:block">{currentGame.description}</p>
+              )} */}
+              <h3 className="text-2xl md:text-4xl font-bold text-white">
+                {currentGame.productName}
+              </h3>
+              <p className="text-white/80 hidden md:block">
+                {currentGame.description}
+              </p>
 
               <div className="flex items-center gap-2">
-                <span className="text-xl font-bold text-white">${currentGame.price.toFixed(2)}</span>
-                {currentGame.originalPrice && (
-                  <span className="text-sm text-white/70 line-through">${currentGame.originalPrice.toFixed(2)}</span>
+                <span className="text-xl font-bold text-white">
+                  ${currentGame.price.toFixed(2)}
+                </span>
+                {currentGame.price && (
+                  <span className="text-sm text-white/70 line-through">
+                    ${currentGame.price.toFixed(2)}
+                  </span>
                 )}
               </div>
 
               <div className="flex flex-col sm:flex-row gap-3 pt-2">
                 <Button className="bg-primary hover:bg-primary/90">
-                  {currentGame.discount > 0
-                    ? "Buy Now"
-                    : currentGame.badge === "Pre-order"
-                      ? "Pre-order Now"
-                      : "Buy Now"}
+                  Buy Now
                 </Button>
-                <Button variant="outline" className="text-white border-white hover:bg-white/10">
-                  View Details
-                </Button>
+                <Link to={`/products/${currentGame.productId}`}>
+                  <Button variant="outline" className="text-whitebg-white/10">
+                    View Details
+                  </Button>
+                </Link>
               </div>
             </div>
           </CardContent>
@@ -141,7 +115,9 @@ export function FeaturedGameCarousel() {
             key={index}
             onClick={() => goToSlide(index)}
             className={`w-2 h-2 rounded-full transition-all ${
-              index === currentIndex ? "bg-primary w-4" : "bg-white/50 hover:bg-white/80"
+              index === currentIndex
+                ? "bg-primary w-4"
+                : "bg-white/50 hover:bg-white/80"
             }`}
             aria-label={`Go to slide ${index + 1}`}
           />
@@ -171,5 +147,5 @@ export function FeaturedGameCarousel() {
         </>
       )}
     </div>
-  )
+  );
 }

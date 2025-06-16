@@ -153,9 +153,9 @@ export function CartPage() {
                             <img
                                 src={item.product.img || "/placeholder.svg"}
                                 alt={item.product.productName || "Product image"}
-                                className="object-cover"
+                                className="object-contain"
                             />
-                          </div>
+                          </div>  
                           <div className="flex flex-col justify-center">
                             <div className="mt-1 text-sm text-muted-foreground md:hidden">
                               ${item.product.price.toFixed(2)} each

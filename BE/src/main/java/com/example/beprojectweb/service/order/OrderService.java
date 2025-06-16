@@ -140,6 +140,18 @@ public class OrderService implements IOrderService {
         return orderMapper.toOrderResponse(saved);
     }
 
+    @Override
+    public List<OrderResponse> getOrdersByCurrentUser() {
+        var context = SecurityContextHolder.getContext();
+        String name = context.getAuthentication().getName();
+        User user = userRepository.findByUsername(name)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        List<Order> orders = orderRepository.findByUser(user);
+        return orders.stream()
+                .map(orderMapper::toOrderResponse)
+                .collect(Collectors.toList());
+    }
+
     private String generateHashedKey(UUID userId, String gameName) {
         String raw = userId + "-" + gameName + "-" + System.nanoTime();
         return Integer.toHexString(raw.hashCode()); // Đơn giản, đủ dùng nếu không cần mã hóa mạnh
@@ -152,4 +164,6 @@ public class OrderService implements IOrderService {
                 .map(orderMapper::toOrderResponse)
                 .toList();
     }
+
+
 }

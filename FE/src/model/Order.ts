@@ -3,7 +3,8 @@ export interface OrderItem {
     id: number;           // ID của OrderItem
     productId: number;    // ID sản phẩm
     productName: string;  // Tên sản phẩm
-    totalPrice: number;   // Giá tại thời điểm mua
+    totalPrice: number;
+    img: string   // Giá tại thời điểm mua
 }
 
 // Model chính cho đơn hàng
@@ -27,6 +28,8 @@ export interface OrderRequest {
 export interface OrderResponse {
     id: number;
     userId: number;
+    username: string;
+    email: string;
     totalPrice: number;
     status: string;
     paymentMethod?: string;
@@ -36,4 +39,5 @@ export interface OrderResponse {
 }
 
 export class PaymentMethodResponse {
+
 }

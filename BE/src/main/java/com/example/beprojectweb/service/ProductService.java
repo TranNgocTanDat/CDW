@@ -102,6 +102,9 @@ public class ProductService {
 
         // Cập nhật thông tin
         productMapper.updateProduct(product, request); // Cập nhật vào object `product`
+        Category category = categoryRepository.findById(request.getCate_ID())
+                .orElseThrow(() -> new AppException(ErrorCode.UNCATEGORIZED_EXCEPTION));
+        product.setCategory(category);
         productRepository.save(product);
 
         return productMapper.toProductResponse(product);
