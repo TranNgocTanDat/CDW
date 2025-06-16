@@ -7,19 +7,36 @@ import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Search, MoreHorizontal, UserPlus, Filter } from "lucide-react"
-import { useQuery, useQueryClient } from "@tanstack/react-query"
-import type { UserResponse } from "@/model/User"
-import userApi from "@/services/userApi"
-
+} from "@/components/ui/dropdown-menu";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Search, UserPlus, Filter } from "lucide-react";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import type { UserCreationRequest, UserResponse } from "@/model/User";
+import userApi from "@/services/userApi";
+import { AddUserModal } from "@/components/users/AddUserModal";
 
 export function UserManagement() {
   const [searchTerm, setSearchTerm] = useState("")
@@ -33,18 +50,51 @@ export function UserManagement() {
     refetchOnWindowFocus: false,
   });
 
-  const filteredUsers =(users ?? []).filter(
+  const addUserMutation = useMutation({
+    mutationFn: userApi.addUser,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["users"] });
+      console.log("Thêm người dùng thành công");
+    },
+  });
+
+  const filteredUsers = (users ?? []).filter(
     (user) =>
       user.username.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      user.email.toLowerCase().includes(searchTerm.toLowerCase()),
-  )
+      user.email.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  const handleSaveUser = async (data: UserCreationRequest) => {
+    const userToSave = {
+      ...data,
+      lastName: data.lastName || "",
+      dob: data.dob || "",
+      password: data.password || "12341234",
+    };
+
+    addUserMutation.mutate(userToSave);
+  };
+
+  const handleDeleteUser = (user: UserResponse) => {
+    userApi
+      .deleteUser(user.id)
+      .then(() => {
+        queryClient.invalidateQueries({ queryKey: ["users"] });
+        console.log("Xoá người dùng thành công");
+      })
+      .catch((error) => {
+        console.error("Lỗi xoá người dùng:", error);
+      });
+  };
 
   return (
     <div className="space-y-6 mx-3">
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-3xl font-bold">User Management</h1>
-          <p className="text-muted-foreground">Manage user accounts and permissions</p>
+          <h1 className="text-3xl font-bold">Quản lý người dùng</h1>
+          <p className="text-muted-foreground">
+            Quản lý tài khoản người dùng và phân quyền
+          </p>
         </div>
         <Button>
           <UserPlus className="mr-2 h-4 w-4" />
@@ -52,17 +102,29 @@ export function UserManagement() {
         </Button>
       </div>
 
+      <AddUserModal
+        open={open}
+        onClose={() => {
+          setOpen(false);
+          setUserEditing(null);
+        }}
+        onSave={handleSaveUser}
+        user={userEditing}
+      />
+
       <Card>
         <CardHeader>
-          <CardTitle>User Overview</CardTitle>
-          <CardDescription>Search and manage all user accounts</CardDescription>
+          <CardTitle>Danh sách người dùng</CardTitle>
+          <CardDescription>
+            Tìm kiếm và quản lý tất cả tài khoản người dùng
+          </CardDescription>
         </CardHeader>
         <CardContent>
           <div className="flex items-center space-x-2 mb-4">
             <div className="relative flex-1">
               <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
               <Input
-                placeholder="Search users..."
+                placeholder="Tìm kiếm người dùng..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="pl-8"
@@ -70,19 +132,17 @@ export function UserManagement() {
             </div>
             <Button variant="outline" size="sm">
               <Filter className="mr-2 h-4 w-4" />
-              Filter
+              Bộ lọc
             </Button>
           </div>
 
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>User</TableHead>
-                <TableHead>Role</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead>Join Date</TableHead>
-                <TableHead>Orders</TableHead>
-                <TableHead>Total Spent</TableHead>
+                <TableHead>Người dùng</TableHead>
+                <TableHead>Họ</TableHead>
+                <TableHead>Tên</TableHead>
+                <TableHead>Đơn hàng</TableHead>
                 <TableHead className="w-[70px]"></TableHead>
               </TableRow>
             </TableHeader>
@@ -109,26 +169,18 @@ export function UserManagement() {
                       </div>
                     </div>
                   </TableCell>
-                  {/* <TableCell>
-                    <Badge variant={user.role === "admin" ? "default" : "secondary"}>{user.role}</Badge>
-                  </TableCell> */}
-                  {/* <TableCell>
-                    <Badge
-                      variant={
-                        user.status === "active" ? "default" : user.status === "suspended" ? "destructive" : "secondary"
-                      }
-                    >
-                      {user.status}
-                    </Badge>
-                  </TableCell> */}
                   <TableCell className="text-sm">{user.firstName}</TableCell>
                   <TableCell className="text-sm">{user.lastName}</TableCell>
-                  <TableCell className="text-sm font-medium">{user.username}</TableCell>
+                  <TableCell className="text-sm font-medium"></TableCell>
                   <TableCell>
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" className="h-8 w-8 p-0">
-                          <MoreHorizontal className="h-4 w-4" />
+                        <Button
+                          size="sm"
+                          variant="destructive"
+                          onClick={() => handleDeleteUser(user)}
+                        >
+                          Xoá
                         </Button>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end">

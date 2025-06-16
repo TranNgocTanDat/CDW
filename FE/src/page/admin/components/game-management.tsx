@@ -20,6 +20,10 @@ import type {  ProductResponse } from "@/model/Product"
 import productApi from "@/services/productApi"
 
 export function GameManagement() {
+  const [searchTerm, setSearchTerm] = useState("");
+  const [open, setOpen] = useState(false);
+  const [productEditing, setProductEditing] = useState<ProductResponse | null>(null);
+  const queryClient = useQueryClient();
 
   const [searchTerm, setSearchTerm] = useState("")
 
@@ -31,32 +35,67 @@ export function GameManagement() {
     refetchOnWindowFocus: false,
   });
 
-  const filteredGames = (products?? []).filter((game) => game.productName.toLowerCase().includes(searchTerm.toLowerCase()))
+  const filteredGames = (products ?? []).filter((game) =>
+    game.productName.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  const createProductMutation = useMutation({
+    mutationFn: productApi.createProduct,
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["products"] }),
+  });
+
+  const updateProductMutation = useMutation({
+    mutationFn: ({ id, data }: { id: number; data: ProductRequest }) =>
+      productApi.updateProduct(id, data),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["products"] }),
+  });
+
+  const deleteProductMutation = useMutation({
+    mutationFn: productApi.deleteProduct,
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["products"] }),
+  });
+
+  const handleSaveProduct = async (data: ProductRequest, id?: number) => {
+    try {
+      if (id) {
+        await updateProductMutation.mutateAsync({ id, data });
+      } else {
+        await createProductMutation.mutateAsync(data);
+      }
+
+      setOpen(false);
+      setProductEditing(null);
+    } catch (error) {
+      console.error("Lưu thất bại", error);
+    }
+  };
 
   return (
     <div className="space-y-6 mx-3">
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-3xl font-bold">Game Management</h1>
-          <p className="text-muted-foreground">Manage your game catalog and inventory</p>
+          <h1 className="text-3xl font-bold">Quản lý trò chơi</h1>
+          <p className="text-muted-foreground">
+            Quản lý danh mục và kho trò chơi của bạn
+          </p>
         </div>
         <Button>
           <Plus className="mr-2 h-4 w-4" />
-          Add Game
+          Thêm trò chơi
         </Button>
       </div>
 
       <Card>
         <CardHeader>
-          <CardTitle>Game Catalog</CardTitle>
-          <CardDescription>Manage all games in your store</CardDescription>
+          <CardTitle>Danh mục trò chơi</CardTitle>
+          <CardDescription>Quản lý tất cả trò chơi trong cửa hàng</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="flex items-center space-x-2 mb-4">
             <div className="relative flex-1">
               <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
               <Input
-                placeholder="Search games..."
+                placeholder="Tìm kiếm trò chơi..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="pl-8"
@@ -64,19 +103,17 @@ export function GameManagement() {
             </div>
             <Button variant="outline" size="sm">
               <Filter className="mr-2 h-4 w-4" />
-              Filter
+              Lọc
             </Button>
           </div>
 
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Game</TableHead>
-                <TableHead>Price</TableHead>
-                <TableHead>Categories</TableHead>
-                <TableHead>Rating</TableHead>
-                <TableHead>Release Date</TableHead>
-                <TableHead>Status</TableHead>
+                <TableHead>Tên trò chơi</TableHead>
+                <TableHead>Giá</TableHead>
+                <TableHead>Danh mục</TableHead>
+                <TableHead>Đánh giá</TableHead>
                 <TableHead className="w-[70px]"></TableHead>
               </TableRow>
             </TableHeader>
@@ -120,10 +157,6 @@ export function GameManagement() {
                       <span className="text-sm">{game.stock}</span>
                     </div>
                   </TableCell>
-                  {/* <TableCell className="text-sm">{new Date(game.releaseDate).toLocaleDateString()}</TableCell> */}
-                  {/* <TableCell>
-                    <Badge variant={game.isNew ? "default" : "secondary"}>{game.isNew ? "New" : "Active"}</Badge>
-                  </TableCell> */}
                   <TableCell>
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
@@ -132,13 +165,31 @@ export function GameManagement() {
                         </Button>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end">
-                        <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                        <DropdownMenuItem>View Details</DropdownMenuItem>
-                        <DropdownMenuItem>Edit Game</DropdownMenuItem>
-                        <DropdownMenuItem>View Analytics</DropdownMenuItem>
+                        <DropdownMenuLabel>Thao tác</DropdownMenuLabel>
+                        <DropdownMenuItem>Xem chi tiết</DropdownMenuItem>
+                        <DropdownMenuItem
+                          onClick={() => {
+                            setProductEditing(game);
+                            setOpen(true);
+                          }}
+                        >
+                          Chỉnh sửa
+                        </DropdownMenuItem>
+                        <DropdownMenuItem>Xem phân tích</DropdownMenuItem>
                         <DropdownMenuSeparator />
-                        <DropdownMenuItem>Duplicate</DropdownMenuItem>
-                        <DropdownMenuItem className="text-red-600">Delete Game</DropdownMenuItem>
+                        <DropdownMenuItem>Nhân bản</DropdownMenuItem>
+                        <DropdownMenuItem
+                          className="text-red-600"
+                          onClick={() => {
+                            if (
+                              confirm("Bạn có chắc chắn muốn xóa trò chơi này?")
+                            ) {
+                              deleteProductMutation.mutate(game.productId);
+                            }
+                          }}
+                        >
+                          Xóa
+                        </DropdownMenuItem>
                       </DropdownMenuContent>
                     </DropdownMenu>
                   </TableCell>

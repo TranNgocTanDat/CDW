@@ -128,6 +128,24 @@ export function GameCard(product: ProductResponse) {
                   New
                 </Badge>
             )}
+          >
+            <Link to="/cart">
+              <Button
+                className="w-40 bg-primary hover:bg-primary/90"
+                onClick={handleAddToCart}
+              >
+                <ShoppingCart className="mr-2 h-4 w-4" />
+                Add to Cart
+              </Button>
+            </Link>
+            <Button
+              className="w-40 bg-secondary hover:bg-secondary/90 text-black"
+              onClick={handleDownloadClick}
+            >
+              Download
+            </Button>
+          </div>
+        </div>
 
             <div
                 className={cn(

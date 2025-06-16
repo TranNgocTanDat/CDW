@@ -27,4 +27,5 @@ export interface ProductResponse {
   price: number;
   stock: number;
   img: string;
+  cate_ID?: number;
 }
