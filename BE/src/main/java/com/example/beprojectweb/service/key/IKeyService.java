@@ -10,5 +10,6 @@ public interface IKeyService {
     List<KeyResponse> getKeysByUserId(Long userId);
 
     List<KeyResponse> getAllKeys();
+    boolean checkGameKey(String key);
 
 }

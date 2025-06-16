@@ -10,7 +10,9 @@ import com.example.beprojectweb.repository.CartRepository;
 import com.example.beprojectweb.repository.KeyRepository;
 import com.example.beprojectweb.repository.OrderRepository;
 import com.example.beprojectweb.repository.UserRepository;
+import com.example.beprojectweb.service.EmailService;
 import com.example.beprojectweb.service.cart.CartService;
+import jakarta.mail.MessagingException;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -29,7 +31,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class OrderService implements IOrderService {
-
+    EmailService emailService;
     UserRepository userRepository;
     CartRepository cartRepository;
     OrderRepository orderRepository;
@@ -117,9 +119,10 @@ public class OrderService implements IOrderService {
         order.setStatus(OrderStatus.PAID);
         Order saved = orderRepository.save(order);
 
-        // Tạo Key cho từng game
+        // Tạo Key và gửi email cho từng game
         Set<OrderItem> orderItems = saved.getOrderItems();
         UUID userId = saved.getUser().getId();
+        String userEmail = saved.getUser().getEmail();
 
         for (OrderItem item : orderItems) {
             String gameName = item.getProduct().getProductName();
@@ -132,6 +135,19 @@ public class OrderService implements IOrderService {
                     .build();
 
             keyRepository.save(newKey);
+
+            // Gửi email chứa key
+            String subject = "Your Game Key for " + gameName;
+            String content = "<h3>Thank you for your purchase!</h3>" +
+                    "<p><strong>Game:</strong> " + gameName + "</p>" +
+                    "<p><strong>Key:</strong> <code>" + hashKey + "</code></p>" +
+                    "<p>Enjoy your game 🎮!</p>";
+
+            try {
+                emailService.sendVerificationEmail(userEmail, subject, content);
+            } catch (MessagingException e) {
+                e.printStackTrace(); // Có thể log bằng logger thay vì print
+            }
         }
 
         // Xoá giỏ hàng

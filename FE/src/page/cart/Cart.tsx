@@ -222,9 +222,9 @@ export function CartPage() {
                 </div>
               </CardContent>
               <CardFooter>
-                <Button className="w-full" onClick={() => setShowPaymentModal(true)}>
-                  Payment
-                </Button>
+                <Link to="/create-order" className="w-full">
+                  <Button className="w-full">Payment</Button>
+                </Link>
               </CardFooter>
             </Card>
           </div>
