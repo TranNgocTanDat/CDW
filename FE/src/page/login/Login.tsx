@@ -38,7 +38,7 @@ const LoginPage = () => {
       const roles = data.userResponse.roles;
       if (roles.includes("ADMIN")) {
         navigate("/admin");
-      } else {
+      } else {  
         navigate("/");
       }
     },

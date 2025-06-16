@@ -1,11 +1,6 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Badge } from "@/components/ui/badge"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
+import { useState } from "react";
 import {
   Card,
   CardContent,
@@ -25,10 +20,6 @@ import {
 } from "@/components/ui/table";
 import {
   DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -39,12 +30,12 @@ import userApi from "@/services/userApi";
 import { AddUserModal } from "@/components/users/AddUserModal";
 
 export function UserManagement() {
-  const [searchTerm, setSearchTerm] = useState("")
+  const [searchTerm, setSearchTerm] = useState("");
   const queryClient = useQueryClient();
+  const [open, setOpen] = useState(false);
+  const [userEditing, setUserEditing] = useState<UserResponse | null>(null);
 
-  const {
-    data: users
-  } = useQuery<UserResponse[]>({
+  const { data: users } = useQuery<UserResponse[]>({
     queryKey: ["users"],
     queryFn: userApi.getUsers,
     refetchOnWindowFocus: false,
@@ -96,9 +87,9 @@ export function UserManagement() {
             Quản lý tài khoản người dùng và phân quyền
           </p>
         </div>
-        <Button>
+        <Button onClick={() => setOpen(true)}>
           <UserPlus className="mr-2 h-4 w-4" />
-          Add User
+          Thêm người dùng
         </Button>
       </div>
 
@@ -153,7 +144,7 @@ export function UserManagement() {
                     <div className="flex items-center space-x-3">
                       <Avatar className="h-8 w-8">
                         <AvatarImage
-                          src={`https://ui-avatars.com/api/?name=${user.username}&background=random`}
+                          src={`http://localhost:8080/api${user?.avatarUrl}`}
                           alt={user.username}
                         />
                         <AvatarFallback>
@@ -165,7 +156,9 @@ export function UserManagement() {
                       </Avatar>
                       <div>
                         <p className="text-sm font-medium">{user.username}</p>
-                        <p className="text-xs text-muted-foreground">{user.email}</p>
+                        <p className="text-xs text-muted-foreground">
+                          {user.email}
+                        </p>
                       </div>
                     </div>
                   </TableCell>
@@ -183,16 +176,6 @@ export function UserManagement() {
                           Xoá
                         </Button>
                       </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end">
-                        <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                        <DropdownMenuItem>View Details</DropdownMenuItem>
-                        <DropdownMenuItem>Edit User</DropdownMenuItem>
-                        <DropdownMenuItem>View Orders</DropdownMenuItem>
-                        <DropdownMenuSeparator />
-                        {/* <DropdownMenuItem className={user.status === "active" ? "text-red-600" : "text-green-600"}>
-                          {user.status === "active" ? "Suspend User" : "Activate User"}
-                        </DropdownMenuItem> */}
-                      </DropdownMenuContent>
                     </DropdownMenu>
                   </TableCell>
                 </TableRow>
@@ -202,5 +185,5 @@ export function UserManagement() {
         </CardContent>
       </Card>
     </div>
-  )
+  );
 }

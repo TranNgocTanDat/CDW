@@ -49,15 +49,39 @@ export default {
     return response.result; // Trả về người dùng đã được tạo
   },
 
+  uploadAvatar: async (file: File): Promise<UserResponse> => {
+  const token = localStorage.getItem("token");
+
+  const formData = new FormData();
+  formData.append("file", file);
+
+  const response = await api.post<APIResponse<UserResponse>>(
+    "/users/me/avatar",
+    formData,
+    {
+      headers: {
+        "Content-Type": "multipart/form-data",
+        Authorization: `Bearer ${token}`,
+      },
+      withCredentials: true,
+    }
+  );
+
+  return response.result;
+},
+
   updateUser: async (
-    id: string,
     user: UserUpdateRequest
   ): Promise<UserResponse> => {
-    const response = await api.put<APIResponse<UserResponse>>(
-      `/users/${id}`,
-      user
+    const token = localStorage.getItem("token");
+    const response = await api.put<APIResponse<UserResponse>>("/users/me/update", user,{
+      headers: {
+        Authorization: `Bearer ${token}`,  // Đảm bảo token được gửi chính xác
+      },
+      withCredentials: true,
+    }
     );
-    return response.data.result; // Trả về người dùng đã được cập nhật
+    return response.result; // Trả về người dùng đã được cập nhật
   },
 
   deleteUser: async (id: string): Promise<void> => {
