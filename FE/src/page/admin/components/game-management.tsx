@@ -1,24 +1,11 @@
-"use client";
+"use client"
 
-import { useState } from "react";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
+import { useState } from "react"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Badge } from "@/components/ui/badge"
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -26,13 +13,11 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { Search, MoreHorizontal, Plus, Filter, Star } from "lucide-react";
-import { useQuery } from "@tanstack/react-query";
-import type { ProductRequest, ProductResponse } from "@/model/Product";
-import productApi from "@/services/productApi";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { AddEditProductModal } from "./EditProductModal";
+} from "@/components/ui/dropdown-menu"
+import { Search, MoreHorizontal, Plus, Filter, Star } from "lucide-react"
+import { useQuery,  } from "@tanstack/react-query"
+import type {  ProductResponse } from "@/model/Product"
+import productApi from "@/services/productApi"
 
 export function GameManagement() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -40,9 +25,13 @@ export function GameManagement() {
   const [productEditing, setProductEditing] = useState<ProductResponse | null>(null);
   const queryClient = useQueryClient();
 
-  const { data: products } = useQuery<ProductResponse[]>({
+  const [searchTerm, setSearchTerm] = useState("")
+
+  const {
+    data: products
+  } = useQuery<ProductResponse[]>({
     queryKey: ["products"],
-    queryFn: productApi.getAllProducts,
+    queryFn: productApi.getProducts,
     refetchOnWindowFocus: false,
   });
 
@@ -90,21 +79,11 @@ export function GameManagement() {
             Quản lý danh mục và kho trò chơi của bạn
           </p>
         </div>
-        <Button onClick={() => setOpen(true)}>
+        <Button>
           <Plus className="mr-2 h-4 w-4" />
           Thêm trò chơi
         </Button>
       </div>
-
-      <AddEditProductModal
-        open={open}
-        onClose={() => {
-          setOpen(false);
-          setProductEditing(null);
-        }}
-        onSave={handleSaveProduct}
-        product={productEditing}
-      />
 
       <Card>
         <CardHeader>
@@ -151,34 +130,25 @@ export function GameManagement() {
                         />
                       </div>
                       <div>
-                        <p className="text-sm font-medium">
-                          {game.productName}
-                        </p>
-                        <p className="text-xs text-muted-foreground">
-                          {game.productName}
-                        </p>
+                        <p className="text-sm font-medium">{game.productName}</p>
+                        <p className="text-xs text-muted-foreground">{game.productName}</p>
                       </div>
                     </div>
                   </TableCell>
                   <TableCell>
                     <div>
-                      <p className="text-sm font-medium">{game.price}</p>
+                      <p className="text-sm font-medium">{(game.price)}</p>
                       {game.price && (
-                        <p className="text-xs text-muted-foreground line-through">
-                          {game.price}
-                        </p>
+                        <p className="text-xs text-muted-foreground line-through">{(game.price)}</p>
                       )}
                     </div>
                   </TableCell>
                   <TableCell>
                     <div className="flex flex-wrap gap-1">
-                      <Badge
-                        key={game.productName}
-                        variant="secondary"
-                        className="text-xs"
-                      >
-                        {game.categoryName}
-                      </Badge>
+                        <Badge key={game.categoryName} variant="secondary" className="text-xs">
+                          {game.categoryName}
+                        </Badge>
+                      
                     </div>
                   </TableCell>
                   <TableCell>
@@ -230,5 +200,5 @@ export function GameManagement() {
         </CardContent>
       </Card>
     </div>
-  );
+  )
 }

@@ -6,6 +6,7 @@ import {
   ShoppingCart,
   User,
 } from "lucide-react";
+import { Button } from "../ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,
@@ -26,10 +27,8 @@ import { useDispatch, useSelector } from "react-redux";
 import type { RootState } from "@/redux/store";
 import { logout } from "@/redux/authSlice";
 import { Link, useNavigate } from "react-router-dom";
-import { Button } from "@/components/ui/button";
-import { useState } from "react";
 
-const Header = () => {
+const Header1 = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
@@ -54,15 +53,6 @@ const Header = () => {
   };
   // console.log("User data:", user);
 
-  const [searchKeyword, setSearchKeyword] = useState("");
-
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (searchKeyword.trim()) {
-      navigate(`/search?keyword=${encodeURIComponent(searchKeyword.trim())}`);
-    }
-  };
-
   return (
     <div className="border-b">
       <div className="container flex h-16 items-center justify-between">
@@ -76,16 +66,12 @@ const Header = () => {
         </div>
         <div className="flex items-center gap-4">
           <div className="relative hidden md:block">
-            <form onSubmit={handleSearch} className="relative hidden md:block">
             <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
             <Input
               type="search"
               placeholder="Search games..."
               className="w-[200px] lg:w-[300px] pl-8"
-              value={searchKeyword}
-              onChange={(e) => setSearchKeyword(e.target.value)}
             />
-          </form>
           </div>
           <Link to="/cart">
             <Button variant="outline" size="icon" className="relative">
@@ -104,11 +90,11 @@ const Header = () => {
                 >
                   <Avatar className="h-8 w-8">
                     <AvatarImage
-                      src={`http://localhost:8080/api${user.avatarUrl}`}
-                      alt={user?.username || "User"}
+                      src={`https://ui-avatars.com/api/?name=${user.username}&background=random`}
+                      alt={user.username}
                     />
                     <AvatarFallback>
-                      {user?.username ? user.username.substring(0, 2).toUpperCase() : "GV"}
+                      {user.username.substring(0, 2).toUpperCase()}
                     </AvatarFallback>
                   </Avatar>
                 </Button>
@@ -127,7 +113,7 @@ const Header = () => {
                 <DropdownMenuSeparator />
                 <DropdownMenuGroup>
                   <DropdownMenuItem asChild>
-                    <Link to="/profile">
+                    <Link to="/">
                       <User className="mr-2 h-4 w-4" />
                       <span>Profile</span>
                     </Link>
@@ -163,4 +149,4 @@ const Header = () => {
   );
 };
 
-export default Header;
+export default Header1;

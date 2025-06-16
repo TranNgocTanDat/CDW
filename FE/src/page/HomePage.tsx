@@ -3,7 +3,6 @@ import { GameCard } from "@/components/home/GameCard";
 import { CategoryCard } from "@/components/home/catgoryCard";
 import { Button } from "@/components/ui/button";
 import categoryApi from "@/services/categoryApi";
-import productApi from "@/services/productApi";
 import { useQuery } from "@tanstack/react-query";
 import { ChevronRight } from "lucide-react";
 import { Link } from "react-router-dom";
@@ -84,7 +83,7 @@ const HomePage = () => {
             View all <ChevronRight className="ml-1 h-4 w-4" />
           </Link>
         </div>
-        {games && <FeaturedGameCarousel featuredGames={games} />}
+        <FeaturedGameCarousel />
       </section>
       <section className="container py-12">
         <div className="flex items-center justify-between mb-6">

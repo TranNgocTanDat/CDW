@@ -39,4 +39,5 @@ export interface OrderResponse {
 }
 
 export class PaymentMethodResponse {
+
 }

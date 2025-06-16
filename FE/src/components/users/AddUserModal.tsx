@@ -38,11 +38,10 @@ export function AddUserModal({ open, onClose, onSave, user }: Props) {
   const handleSave = useCallback(() => {
     if (username.trim() === "" || firstName.trim() === "") return
     onSave({
-      username,
+      username, firstName,
       password: "",
       lastName: "",
-      dob: "",
-      email: ""
+      dob: ""
     }, user?.id)
     onClose()
   }, [username, firstName, onSave, onClose, user?.id])
