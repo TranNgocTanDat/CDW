@@ -133,7 +133,7 @@ const Header = () => {
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild>
-                    <Link to="/">
+                    <Link to="/orders/me">
                       <Package className="mr-2 h-4 w-4" />
                       <span>Orders</span>
                     </Link>
