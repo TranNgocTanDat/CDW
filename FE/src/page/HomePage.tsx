@@ -20,17 +20,6 @@ const HomePage = () => {
     queryFn: () => productApi.getProducts(4, 1),
     refetchOnWindowFocus: false,
   });
-  const { data: gamesSpecial } = useQuery({
-    queryKey: ["gamesSpecial", { limit: 2, offset: 2 }],
-    queryFn: ({ queryKey }) => {
-      const [, params] = queryKey as [
-        string,
-        { limit: number; offset: number }
-      ];
-      return productApi.getProducts(params.limit, params.offset);
-    },
-    refetchOnWindowFocus: false,
-  });
 
   const { data: gamesSlide } = useQuery({
     queryKey: ["gamesSlide", { limit: 1, offset: 0 }],

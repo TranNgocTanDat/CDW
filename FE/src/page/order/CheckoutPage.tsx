@@ -33,12 +33,7 @@ export default function CheckoutPage() {
     lastName: "",
     phone: "",
   })
-  const [cardInfo, setCardInfo] = useState({
-    number: "",
-    expiry: "",
-    cvv: "",
-    name: "",
-  })
+
   const [agreeTerms, setAgreeTerms] = useState(false)
 
   const subtotal = cartItems.reduce((sum, item) => sum + item.totalPrice, 0)
@@ -195,36 +190,7 @@ export default function CheckoutPage() {
                       </div>
                     </RadioGroup>
 
-                    {selectedPayment === "card" && (
-                        <div className="mt-6 space-y-4 p-4 bg-slate-700/30 rounded-lg">
-                          <Input
-                              placeholder="1234 5678 9012 3456"
-                              value={cardInfo.number}
-                              onChange={(e) => setCardInfo({ ...cardInfo, number: e.target.value })}
-                              className="bg-slate-700 border-slate-600 text-white"
-                          />
-                          <div className="grid grid-cols-2 gap-4">
-                            <Input
-                                placeholder="MM/YY"
-                                value={cardInfo.expiry}
-                                onChange={(e) => setCardInfo({ ...cardInfo, expiry: e.target.value })}
-                                className="bg-slate-700 border-slate-600 text-white"
-                            />
-                            <Input
-                                placeholder="CVV"
-                                value={cardInfo.cvv}
-                                onChange={(e) => setCardInfo({ ...cardInfo, cvv: e.target.value })}
-                                className="bg-slate-700 border-slate-600 text-white"
-                            />
-                          </div>
-                          <Input
-                              placeholder="NGUYEN VAN A"
-                              value={cardInfo.name}
-                              onChange={(e) => setCardInfo({ ...cardInfo, name: e.target.value })}
-                              className="bg-slate-700 border-slate-600 text-white"
-                          />
-                        </div>
-                    )}
+               
                   </CardContent>
                 </Card>
               </div>

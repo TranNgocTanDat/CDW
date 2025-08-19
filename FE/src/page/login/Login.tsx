@@ -22,8 +22,8 @@ import { Link, useNavigate } from "react-router-dom";
 const LoginPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState<string | null>(null);
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error] = useState<string | null>(null);
+  const [isSubmitting] = useState(false);
 
   const navigate = useNavigate();
   const dispatch = useDispatch();

@@ -14,8 +14,6 @@ import {
   Gamepad2,
   ShoppingBag,
   DollarSign,
-  TrendingUp,
-  TrendingDown,
   Clock,
   Star,
 } from "lucide-react";
@@ -24,37 +22,8 @@ import type { OrderResponse } from "@/model/Order";
 import orderApi from "@/services/orderApi";
 import type { ProductResponse } from "@/model/Product";
 import productApi from "@/services/productApi";
-import { games } from "../game";
 import type { UserResponse } from "@/model/User";
 import userApi from "@/services/userApi";
-
-// Top game bán chạy
-const topGames = [
-  {
-    name: "Cyber Nexus 2077",
-    sales: 245,
-    revenue: "$7,351",
-    rating: 4.5,
-  },
-  {
-    name: "Shadow Realm",
-    sales: 189,
-    revenue: "$11,331",
-    rating: 4.9,
-  },
-  {
-    name: "Dragon's Keep",
-    sales: 156,
-    revenue: "$6,244",
-    rating: 4.5,
-  },
-  {
-    name: "Eternal Quest IX",
-    sales: 134,
-    revenue: "$2,678",
-    rating: 4.8,
-  },
-];
 
 export function DashboardOverview() {
   const { data: orders } = useQuery<OrderResponse[]>({
@@ -70,7 +39,6 @@ export function DashboardOverview() {
     0
   );
 
-  const countGames = games?.length;
 
   const { data: products } = useQuery<ProductResponse[]>({
     queryKey: ["products"],
@@ -131,7 +99,7 @@ export function DashboardOverview() {
             <Gamepad2 className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{countGames}</div>
+            <div className="text-2xl font-bold"></div>
             <div className="flex items-center space-x-2 text-xs text-muted-foreground">
               <span className="text-green-500">+8.2%</span>
               <span>so với tháng trước</span>

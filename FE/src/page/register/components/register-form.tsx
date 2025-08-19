@@ -41,7 +41,11 @@ export function RegisterForm() {
 
     try {
         register.mutateAsync({
-          email, password, username,
+          dob: "",
+          lastName: "",
+          username: "",
+          password: "",
+          email: ""
         })
         navigate("/verify")
     } catch (err) {

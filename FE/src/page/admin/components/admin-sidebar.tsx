@@ -3,7 +3,7 @@
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { ScrollArea } from "@/components/ui/scroll-area"
-import { LayoutDashboard, Users, Gamepad2, ShoppingBag, BarChart3, Settings  } from "lucide-react"
+import { LayoutDashboard, Users, Gamepad2, ShoppingBag} from "lucide-react"
 import type { AdminSection } from "./admin-dashboard"
 
 interface AdminSidebarProps {

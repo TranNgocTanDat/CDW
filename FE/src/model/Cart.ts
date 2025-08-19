@@ -1,5 +1,5 @@
 import type { Product, ProductResponse } from "./Product";
-import type { User, UserResponse } from "./User";
+import type { User } from "./User";
 
 export interface Cart{
     id: number;
