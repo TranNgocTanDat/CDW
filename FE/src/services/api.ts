@@ -2,7 +2,7 @@ import store from "@/redux/store";
 import axios from "axios";
 import type { AxiosRequestConfig } from "axios";
 
-const DOMAIN = "http://192.168.1.110:8080/api";
+const DOMAIN = import.meta.env.VITE_APP_BACKEND_URL;
 
 const api = axios.create({
   proxy: false,
