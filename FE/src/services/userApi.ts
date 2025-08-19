@@ -6,7 +6,6 @@ import type {
 } from "@/model/User";
 import type { APIResponse } from "@/model/APIResponse";
 
-
 export default {
   // getUsers: () => api.get<APIResponse<UserResponse[]>>("/users"),
   // addUser: (user: UserCreationRequest) => api.post<UserResponse>("/users", user),
@@ -16,7 +15,7 @@ export default {
     const token = localStorage.getItem("token");
     const response = await api.get<APIResponse<UserResponse[]>>("/users", {
       headers: {
-        Authorization: `Bearer ${token}`,  
+        Authorization: `Bearer ${token}`,
       },
       withCredentials: true,
     });
@@ -25,61 +24,65 @@ export default {
   },
 
   getMyInfo: async (): Promise<UserResponse> => {
-    const token = localStorage.getItem("token");  // Lấy token từ localStorage
+    const token = localStorage.getItem("token"); // Lấy token từ localStorage
 
     const response = await api.get<APIResponse<UserResponse>>(`/users/myInfo`, {
       headers: {
-        Authorization: `Bearer ${token}`,  // Đảm bảo token được gửi chính xác
+        Authorization: `Bearer ${token}`, // Đảm bảo token được gửi chính xác
       },
       withCredentials: true,
     });
 
     if (response.code === 401) {
       alert("Token hết hạn hoặc không hợp lệ. Vui lòng đăng nhập lại.");
-      localStorage.removeItem("token");  // Xóa token khi không hợp lệ
-      window.location.href = "/login";  // Chuyển hướng về trang đăng nhập
+      localStorage.removeItem("token"); // Xóa token khi không hợp lệ
+      window.location.href = "/login"; // Chuyển hướng về trang đăng nhập
     }
     console.log(response);
-    return response.result;  // Trả về dữ liệu người dùng
+    return response.result; // Trả về dữ liệu người dùng
   },
 
   addUser: async (user: UserCreationRequest): Promise<UserResponse> => {
-    const response = await api.post<APIResponse<UserResponse>>("/auth/signup", user);
+    const response = await api.post<APIResponse<UserResponse>>(
+      "/auth/signup",
+      user
+    );
     console.log(response);
     return response.result; // Trả về người dùng đã được tạo
   },
 
   uploadAvatar: async (file: File): Promise<UserResponse> => {
-  const token = localStorage.getItem("token");
-
-  const formData = new FormData();
-  formData.append("file", file);
-
-  const response = await api.post<APIResponse<UserResponse>>(
-    "/users/me/avatar",
-    formData,
-    {
-      headers: {
-        "Content-Type": "multipart/form-data",
-        Authorization: `Bearer ${token}`,
-      },
-      withCredentials: true,
-    }
-  );
-
-  return response.result;
-},
-
-  updateUser: async (
-    user: UserUpdateRequest
-  ): Promise<UserResponse> => {
     const token = localStorage.getItem("token");
-    const response = await api.put<APIResponse<UserResponse>>("/users/me/update", user,{
-      headers: {
-        Authorization: `Bearer ${token}`,  // Đảm bảo token được gửi chính xác
-      },
-      withCredentials: true,
-    }
+
+    const formData = new FormData();
+    formData.append("file", file);
+
+    const response = await api.post<APIResponse<UserResponse>>(
+      "/users/me/avatar",
+      formData,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${token}`,
+        },
+        withCredentials: true,
+      }
+    );
+
+    return response.result;
+  },
+
+  updateUser: async (user: UserUpdateRequest): Promise<UserResponse> => {
+    const token = localStorage.getItem("token");
+    const response = await api.put<APIResponse<UserResponse>>(
+      "/users/me/update",
+      user,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`, // Đảm bảo token được gửi chính xác
+        },
+        withCredentials: true,
+      }
     );
     return response.result; // Trả về người dùng đã được cập nhật
   },

@@ -24,16 +24,14 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Search, UserPlus, Filter } from "lucide-react";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import type { UserCreationRequest, UserResponse } from "@/model/User";
+import {  useQuery, useQueryClient } from "@tanstack/react-query";
+import type { UserResponse } from "@/model/User";
 import userApi from "@/services/userApi";
-import { AddUserModal } from "@/components/users/AddUserModal";
 
 export function UserManagement() {
   const [searchTerm, setSearchTerm] = useState("");
   const queryClient = useQueryClient();
-  const [open, setOpen] = useState(false);
-  const [userEditing, setUserEditing] = useState<UserResponse | null>(null);
+
 
   const { data: users } = useQuery<UserResponse[]>({
     queryKey: ["users"],
@@ -41,30 +39,12 @@ export function UserManagement() {
     refetchOnWindowFocus: false,
   });
 
-  const addUserMutation = useMutation({
-    mutationFn: userApi.addUser,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["users"] });
-      console.log("Thêm người dùng thành công");
-    },
-  });
 
   const filteredUsers = (users ?? []).filter(
     (user) =>
       user.username.toLowerCase().includes(searchTerm.toLowerCase()) ||
       user.email.toLowerCase().includes(searchTerm.toLowerCase())
   );
-
-  const handleSaveUser = async (data: UserCreationRequest) => {
-    const userToSave = {
-      ...data,
-      lastName: data.lastName || "",
-      dob: data.dob || "",
-      password: data.password || "12341234",
-    };
-
-    addUserMutation.mutate(userToSave);
-  };
 
   const handleDeleteUser = (user: UserResponse) => {
     userApi
@@ -87,21 +67,12 @@ export function UserManagement() {
             Quản lý tài khoản người dùng và phân quyền
           </p>
         </div>
-        <Button onClick={() => setOpen(true)}>
+        <Button>
           <UserPlus className="mr-2 h-4 w-4" />
           Thêm người dùng
         </Button>
       </div>
 
-      <AddUserModal
-        open={open}
-        onClose={() => {
-          setOpen(false);
-          setUserEditing(null);
-        }}
-        onSave={handleSaveUser}
-        user={userEditing}
-      />
 
       <Card>
         <CardHeader>

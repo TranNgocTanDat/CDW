@@ -2,7 +2,7 @@ import store from "@/redux/store";
 import axios from "axios";
 import type { AxiosRequestConfig } from "axios";
 
-const DOMAIN = "http://localhost:8080/api";
+const DOMAIN = "http://192.168.1.110:8080/api";
 
 const api = axios.create({
   proxy: false,
@@ -20,7 +20,6 @@ api.interceptors.response.use(
       //here we have a type guard check, error inside this if will be treated as AxiosError
       const response = error?.response;
       const request = error?.request;
-      const config = error?.config; //here we have access the config used to make the api call (we can make a retry using this conf)
 
       if (error.code === "ERR_NETWORK") {
         console.log("connection problems..");
