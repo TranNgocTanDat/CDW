@@ -15,4 +15,4 @@ COPY --from=build /app/target/be-project-web-0.0.1-SNAPSHOT.war /run/be-project-
 
 EXPOSE 5001
 
-ENTRYPOINT ["java", "-jar", "app/be-project-web-0.0.1-SNAPSHOT.war"]
+ENTRYPOINT ["java", "-jar", "be-project-web-0.0.1-SNAPSHOT.war"]

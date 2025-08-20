@@ -7,8 +7,8 @@ services:
     restart: always
     environment:
       - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
-      - MYSQL_DATABASE=${MYSQL_DATABASE}
-      - MYSQL_USER=${MYSQL_USER} 
+      - MYSQL_DATABASE=${MYSQL_DATABASE} 
+      - MYSQL_USER=${MYSQL_USER}
       - MYSQL_PASSWORD=${MYSQL_PASSWORD}
     ports: 
       - "3305:3306"
@@ -16,28 +16,28 @@ services:
       - mysql_data:/var/lib/mysql
 
   backend:
-    build: ./backend 
+    build: ./BE 
     # image: game/begame
     restart: always
     ports:
       - "5001:5001"
     environment:
-      - DB_URL=${DB_URL}
-      - DB_USERNAME=${MYSQL_USER}
-      - DB_PASSWORD=${MYSQL_PASSWORD}
+      - DB_URL=jdbc:mysql://mysql:3306/beprojectweb
+      - DB_USERNAME=game
+      - DB_PASSWORD=Trandat123
     depends_on:
       - mysql
 
   frontend:
     # image: game/fegame
-    # build: 
-      context: ./frontend
+    build: 
+      context: ./FE
       args:
         # provide env variables to be used when building our frontend
-        - VITE_APP_BACKEND_URL=https://backend.dren.io.vn/api
+        - VITE_APP_BACKEND_URL=https://192.168.1.110:5001/api
     restart: always
     ports:
-      - "5002:5002"
+      - "5002:80"
     depends_on:
       - backend
 
