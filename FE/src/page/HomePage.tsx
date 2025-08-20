@@ -32,6 +32,7 @@ const HomePage = () => {
         <div className="absolute inset-0 bg-gradient-to-r from-black/70 to-black/30 z-10" />
         {gamesSlide?.map((game) => (
           <div
+            key={game.productId}
             className="h-[500px] bg-cover bg-center bg-no-repeat"
             style={{
               backgroundImage: `url('${game.img}')`,
@@ -116,6 +117,7 @@ const HomePage = () => {
             ) : (
               games.map((game) => (
                 <GameCard
+                  key={game.productId}
                   productName={game.productName}
                   img={game.img || "/placeholder.svg?height=300&width=200"}
                   price={game.price}
@@ -145,6 +147,7 @@ const HomePage = () => {
           ) : (
             gamesSlide.map((game) => (
               <GameCard
+                key={game.productId}
                 productName={game.productName}
                 img={game.img || "/placeholder.svg?height=300&width=200"}
                 price={game.price}
