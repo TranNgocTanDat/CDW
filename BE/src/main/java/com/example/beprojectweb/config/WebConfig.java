@@ -19,11 +19,10 @@ public class WebConfig implements WebMvcConfigurer {
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
                 .allowedOrigins(
-                "http://localhost:5173",
                 "http://192.168.1.110:5002",
-                "http:frontend.dren.io.vn"
-            )
-                .allowedMethods("GET", "POST", "PUT", "DELETE")
+		            "http://frontend.dren.io.vn"
+                )
+                .allowedMethods("GET", "POST", "PUT", "DELETE") 
                 .allowCredentials(true);
     }
 }
