@@ -49,7 +49,6 @@ import categoryApi from "@/services/categoryApi";
 //   },
 // ]
 
-
 const platforms: { title: string; href: string; description: string }[] = [
   {
     title: "PC",
@@ -76,11 +75,11 @@ const platforms: { title: string; href: string; description: string }[] = [
 ];
 
 export function GameNavigationMenu() {
-    const { data: gameCategories } = useQuery({
-        queryKey: ["gameCategories"],
-        queryFn: categoryApi.getCategories,
-        refetchOnWindowFocus: false,
-      });
+  const { data: gameCategories } = useQuery({
+    queryKey: ["gameCategories"],
+    queryFn: categoryApi.getCategories,
+    refetchOnWindowFocus: false,
+  });
   return (
     <NavigationMenu>
       <NavigationMenuList>
@@ -92,11 +91,10 @@ export function GameNavigationMenu() {
             ) : (
               <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px]">
                 {gameCategories.map((category) => (
-                  <ListItem
-                    key={category.cate_ID}
-                    title={category.name}
-                    href={`/categories/${category.cate_ID}`}
-                  >
+                  <ListItem key={category.cate_ID} title={category.name}>
+                    <Link to={`/categories/${category.cate_ID}`}>
+                      {category.description}
+                    </Link>
                     {category.description}
                   </ListItem>
                 ))}
