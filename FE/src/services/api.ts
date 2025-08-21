@@ -3,7 +3,7 @@ import axios from "axios";
 import type { AxiosRequestConfig } from "axios";
 
 // const DOMAIN = import.meta.env.VITE_APP_BACKEND_URL;
-const DOMAIN = import.meta.env.VITE_BACKEND_URL;
+const DOMAIN = import.meta.env.VITE_API_URL;
 
 const api = axios.create({
   proxy: false,

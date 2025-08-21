@@ -34,7 +34,7 @@ services:
       context: ./FE
       args:
         # provide env variables to be used when building our frontend
-        - VITE_APP_BACKEND_URL=https://192.168.1.110:5001/api
+        - VITE_API_URL=http://192.168.1.110:5001/api
     restart: always
     ports:
       - "5002:80"
