@@ -2,6 +2,11 @@
 FROM node:22-alpine AS build
 
 WORKDIR /app
+
+# Dockerfile trong FE
+ARG VITE_API_URL
+ENV VITE_API_URL=$VITE_API_URL
+
 COPY . .
 RUN npm install 
 RUN npm run build
