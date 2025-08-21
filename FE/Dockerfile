@@ -9,5 +9,6 @@ RUN npm run build
 ## run stage ##
 FROM nginx:alpine
 COPY --from=build /app/dist /usr/share/nginx/html
+COPY default.conf /etc/nginx/conf.d/default.conf
 EXPOSE 5002
 ENTRYPOINT ["nginx", "-g", "daemon off;"]
